@@ -1,356 +1,448 @@
 # LP FAL — V1 Yapılacaklar Listesi
 
-Bu liste `SPECIFICATION.md` şartnamesini uygulamak için sıra bazlı çalışma planıdır. V1 tamamlanana kadar kapsam dışı özellik eklenmez.
+Bu liste `SPECIFICATION.md`, `V1_RELEASE_GATES.md` ve `MONETIZATION_V1.md` ile birlikte uygulanır. Sıra bağımlılıklara göre düzenlenmiştir. Bir fazın bitiş kriteri doğrulanmadan sonraki kritik faz final kabul edilmez.
 
 ---
 
-## FAZ 0 — Repo ve proje temeli
+## FAZ 0 — Repo, kimlik ve çalışma kuralları
 
 - [ ] Flutter stable proje iskeletini oluştur.
-- [ ] Android package/applicationId belirle ve sabitle.
-- [ ] `main`, geliştirme branch stratejisi ve `.gitignore` düzenini kur.
-- [ ] `analysis_options.yaml` ve lint kurallarını ekle.
-- [ ] Feature-first klasör yapısını kur.
-- [ ] Environment/secrets yapısını oluştur; hiçbir secret’ı repoya yazma.
-- [ ] GitHub Actions: `flutter analyze`, unit/widget test ve Android build kontrolü.
-- [ ] Debug APK’nın sıfırdan temiz ortamda derlendiğini doğrula.
+- [ ] Android `applicationId` değerini sabitle (`com.lefferionprime.lpfal` önerilen kalıcı kimlik).
+- [ ] `minSdk/compileSdk/targetSdk` değerlerini AI runtime + güncel Play gereksinimine göre belirle.
+- [ ] `.gitignore`, lint ve `analysis_options.yaml` kur.
+- [ ] Feature-first klasör yapısını oluştur.
+- [ ] Secrets/release signing ayrımını kur; keystore veya secret repoya yazma.
+- [ ] GitHub Actions: analyze + test + Android build kontrolü.
+- [ ] V1 kapsam dokümanlarını repo kökünde normatif kabul et.
 
-**Bitiş kriteri:** Repo temiz, CI yeşil, boş uygulama debug APK olarak açılıyor.
-
----
-
-## FAZ 1 — Marka, logo ve temel tema
-
-- [ ] MIZANGLOBAL `assets/brand/lefferion-prime-logo.png` asset’ini LP FAL projesine aktar.
-- [ ] Uygulama adını her Android/Flutter yüzeyinde `LP FAL` yap.
-- [ ] Adaptive launcher icon varyasyonlarını aynı marka geometrisini bozmadan üret.
-- [ ] Splash ekranını aynı logoyla oluştur.
-- [ ] Açık tema palette/token sistemini tanımla.
-- [ ] Tipografi, spacing, radius, shadow ve icon standartlarını tanımla.
-- [ ] Dark theme ekleme; V1 yalnız onaylanan açık görünümle ilerlesin.
-
-**Bitiş kriteri:** Launcher, splash ve uygulama içi logolar net; uygulama ismi her yerde LP FAL.
+**Bitiş kriteri:** Temiz repo, CI çalışıyor, boş debug APK derlenip açılıyor.
 
 ---
 
-## FAZ 2 — Lisanslı gerçek görsel asset seti
+## FAZ 1 — Marka + hukuki/güvenli ürün temeli
 
-- [ ] Dashboard kahve kartı için yüksek kaliteli gerçek fotoğraf seç.
-- [ ] Dashboard tarot kartı için premium görsel seç.
-- [ ] 78 tarot kartının tek tip yüksek çözünürlüklü/public-domain setini hazırla.
-- [ ] Görselleri uygulama için WebP/JPEG/PNG olarak optimize et.
-- [ ] Filigranlı, düşük çözünürlüklü, karışık desteli veya AI üretimi görsel kullanma.
-- [ ] `assets/licenses/ASSET_LICENSES.md` içine kaynak/lisans kayıtlarını yaz.
-- [ ] Görsellerin offline asset olarak açıldığını doğrula.
+- [ ] MIZANGLOBAL `assets/brand/lefferion-prime-logo.png` asset'ini LP FAL'a aktar.
+- [ ] Görünen adı her yerde `LP FAL` yap.
+- [ ] Adaptive launcher icon ve splash'ı aynı marka geometrisiyle hazırla.
+- [ ] Uygulamanın eğlence/kişisel yorum konumunu sabitle.
+- [ ] Ortak safety policy oluştur:
+  - kesin gelecek iddiası yok,
+  - tıbbi/hukuki/finansal/profesyonel tavsiye yok,
+  - hayat kararı yönlendiren emir yok,
+  - ölüm/hamilelik/hastalık/hukuki sonuç/garantili finans kesinliği yok.
+- [ ] Sonuç ekranında kullanılacak disclaimer metnini component olarak tanımla.
+- [ ] AI prompt katmanından bağımsız uygulama-level safety filtre arayüzünü tasarla.
 
-**Bitiş kriteri:** Uygulamanın tüm statik görselleri lisans açısından kayıtlı, kaliteli ve yerel.
-
----
-
-## FAZ 3 — Dashboard UI
-
-- [ ] Üst bar: logo + LP FAL + profil/ayar erişimi.
-- [ ] Büyük `Kahve Falı` kartını gerçek görselle oluştur.
-- [ ] `Falına Bak` CTA’sını kart üzerine doğru kontrastla yerleştir.
-- [ ] Büyük `Tarot Falı` kartını yüksek kaliteli görselle oluştur.
-- [ ] `Tarot Açılımı` CTA’sını ekle.
-- [ ] `Son Falın / Falına Devam Et` kartını conditional yap.
-- [ ] Bottom navigation: Ana Sayfa / Fallarım / Premium / Profil.
-- [ ] 360dp, orta telefon, büyük telefon, tablet ve BlueStacks responsive kontrolü.
-- [ ] Overflow, clipped text ve safe-area sorunlarını temizle.
-
-**Bitiş kriteri:** Dashboard onaylanan açık/krem tasarıma sadık ve tüm hedef ekranlarda responsive.
+**Bitiş kriteri:** Marka sabit, safety kuralları dokümante ve kod mimarisinde ayrı bir katman olarak tanımlı.
 
 ---
 
-## FAZ 4 — Yerel model altyapısı
+## FAZ 2 — Görsel asset seti + design system
 
-- [ ] Resmi Qwen3.5-0.8B model kaynağını ve lisansını sabitle.
-- [ ] Android üzerinde kullanılacak inference runtime’ını seç ve küçük PoC hazırla.
-- [ ] Q4 ve gerekirse alternatif quantization benchmarkı yap.
-- [ ] 4 GB / 6 GB / 8 GB cihaz sınıflarında model yükleme testleri yap.
-- [ ] Peak RAM, warm-up, token/s ve crash/OOM sonuçlarını kaydet.
-- [ ] Model runtime’ını Flutter UI’dan native/FFI katmanıyla izole et.
-- [ ] Inference hiçbir koşulda ana UI thread’ini bloke etmesin.
-- [ ] Model missing/corrupt/unsupported-device state’lerini tasarla.
+- [ ] Açık/krem renk tokenlarını tanımla.
+- [ ] Tipografi, spacing, radius, shadow, button ve card standartlarını oluştur.
+- [ ] Kahve dashboard görseli için lisanslı gerçek fotoğraf seç.
+- [ ] Tarot dashboard görseli + 78 kartlık tek yüksek kaliteli/public-domain deste hazırla.
+- [ ] El Falı dashboard görseli için lisanslı gerçek avuç içi fotoğrafı seç.
+- [ ] AI üretimi dekoratif asset kullanma.
+- [ ] Görselleri WebP/JPEG/PNG olarak optimize et.
+- [ ] `assets/licenses/ASSET_LICENSES.md` kayıtlarını oluştur.
 
-**Bitiş kriteri:** Telefonda internetsiz basit Türkçe prompta Qwen cevap verebiliyor ve UI donmuyor.
-
----
-
-## FAZ 5 — Debug model kurulum yolu
-
-- [ ] Modeli Git reposuna commit etme.
-- [ ] Debug uygulamada local model path desteği ekle.
-- [ ] Windows için `tools/install_model.ps1` veya eşdeğer ADB kurulum aracı hazırla.
-- [ ] Model dosyasını application private storage’a kopyalama/tespit akışını kur.
-- [ ] SHA-256 bütünlük kontrolü ekle.
-- [ ] Google Play’e yüklemeden temiz telefonda model + APK testini doğrula.
-
-**Bitiş kriteri:** Geliştirici PC’den modeli bir kez telefona aktararak tüm AI fonksiyonlarını Play Store olmadan test edebiliyor.
+**Bitiş kriteri:** Tasarım tokenları hazır, bütün V1 statik görsel kaynakları lisanslı ve yerel.
 
 ---
 
-## FAZ 6 — Kahve fotoğrafı giriş ve kalite kontrolü
+## FAZ 3 — Navigation + Dashboard UI
 
-- [ ] Kamera izni ve galeri seçimi.
-- [ ] 2–3 fotoğraf desteği; 3 fotoğraf önerisi.
-- [ ] EXIF/orientation düzeltme.
-- [ ] Görsel çözünürlük/boyut optimizasyonu.
-- [ ] Blur kontrolü.
-- [ ] Exposure/karanlık kontrolü.
-- [ ] Fincan içi görünürlük kontrolü.
+- [ ] Üst bar: logo + LP FAL + profil/ayar.
+- [ ] Büyük Kahve Falı hero kartı: `Falına Bak`.
+- [ ] Tarot Falı kartı: `Kartlarını Seç`.
+- [ ] El Falı kartı: `Avucunu Yorumla`.
+- [ ] Dar telefonda dikey layout.
+- [ ] Geniş telefon/tablette Tarot + El Falı responsive iki kolon/grid varyasyonu.
+- [ ] Son Falın / Sohbete Dön conditional kartı.
+- [ ] Bottom nav: Ana Sayfa / Fallarım / Premium / Profil.
+- [ ] 360dp, orta/büyük telefon, tablet, BlueStacks overflow kontrolü.
+
+**Bitiş kriteri:** Üç ana fal modu dashboard'dan erişilebilir ve onaylı açık tasarım bütün hedef ekranlarda bozulmuyor.
+
+---
+
+## FAZ 4 — Yerel Qwen runtime PoC
+
+- [ ] Resmi Qwen3.5-0.8B model/revision ve lisansı sabitle.
+- [ ] Android'de kullanılacak inference runtime'ını seç.
+- [ ] Görsel input gerektiren Kahve + El için runtime/model paketinin multimodal input desteğini doğrula.
+- [ ] Q4 ve gerekiyorsa alternatif quantization benchmarkı yap.
+- [ ] 4/6/8 GB cihaz sınıflarında model load testi.
+- [ ] Peak RAM, warm-up, token/s, OOM sonuçlarını kaydet.
+- [ ] Flutter UI ↔ native/FFI inference katmanını ayır.
+- [ ] Inference ana thread'i bloke etmesin.
+- [ ] Model missing/corrupt/unsupported-device state'lerini tanımla.
+
+**Bitiş kriteri:** Telefonda internetsiz Türkçe text prompt ve test görsel input işlenebiliyor; UI donmuyor.
+
+---
+
+## FAZ 5 — Debug/local model kurulumu
+
+- [ ] Modeli Git repo geçmişine commit etme.
+- [ ] Debug local model path desteği.
+- [ ] Windows `tools/install_model.ps1` veya eşdeğer ADB aracı.
+- [ ] App-private model storage.
+- [ ] Model/projector SHA-256 doğrulaması.
+- [ ] Google Play'e yüklemeden clean phone model + APK testi.
+
+**Bitiş kriteri:** Model PC'den bir kez telefona kurulup bütün AI geliştirmesi Play olmadan test edilebiliyor.
+
+---
+
+## FAZ 6 — Ortak kamera / Photo Picker / gizlilik pipeline'ı
+
+Bu faz Kahve ve El Falı tarafından ortak kullanılacaktır.
+
+- [ ] System Photo Picker entegrasyonu.
+- [ ] Kamera capture entegrasyonu.
+- [ ] Gereksiz broad storage permission isteme.
+- [ ] Kamera iznini yalnız kullanıcı capture başlatınca iste.
+- [ ] EXIF/orientation normalize.
+- [ ] App-private temp file yönetimi.
+- [ ] Blur/exposure/resolution için ortak kalite yardımcıları.
+- [ ] Fotoğraf cleanup lifecycle.
+- [ ] Production log redaction.
+- [ ] Android Auto Backup exclusion.
+- [ ] Kullanıcı fotoğraflarının training'e varsayılan olarak gitmediğini garanti et.
+
+**Bitiş kriteri:** Fotoğraf alma, işleme ve silme akışı güvenli; Kahve/El aynı media abstraction'ını kullanıyor.
+
+---
+
+## FAZ 7 — Kahve fotoğrafı kalite + preprocessing
+
+- [ ] 2–3 fotoğraf desteği; 3 önerisi.
+- [ ] Fincan/fincan içi görünürlük kontrolü.
 - [ ] Yanlış görsel tespiti.
-- [ ] Kullanıcıya fotoğraf çekim yönergeleri.
-- [ ] Kalitesiz görüntüde AI’ya geçmeden retry.
+- [ ] Crop/normalize.
+- [ ] Ağız/orta/dip/kulp çevresi region extraction.
+- [ ] Kalitesiz fotoğrafta AI başlamadan kullanıcıya retry.
+- [ ] Fotoğraf çekim yönergesi ekranı.
 
-**Bitiş kriteri:** AI’ya yalnız analiz edilebilir fincan fotoğrafları gidiyor.
-
----
-
-## FAZ 7 — Kahve Falı AI pipeline
-
-- [ ] Görüntü preprocessing katmanı.
-- [ ] Fincan bölgesi crop/normalize.
-- [ ] Ağız / orta / dip / kulp çevresi gibi gerekli alt bölgeleri çıkar.
-- [ ] İlk Qwen aşaması: sadece structured visual analysis.
-- [ ] `region`, `shape`, `confidence` veri modelini tanımla.
-- [ ] Confidence threshold kurallarını sabitle.
-- [ ] Düşük güvenli sembolleri ele.
-- [ ] İkinci Qwen aşaması: yalnız structured analysis üzerinden fal metni üret.
-- [ ] Genel / Aşk / İş-Para / Yol-Değişim bölümlerini oluştur.
-- [ ] Fal dışı veya yüksek riskli kesin iddiaları filtrele.
-- [ ] Aynı görselde gereksiz/random sembol eklenmesini engelle.
-- [ ] Analiz ekranında gerçek ilerleme state’leri göster; sahte % bar kullanma.
-
-**Bitiş kriteri:** Kullanıcı fotoğraf yükleyip cihaz üzerinde tutarlı kahve falı sonucu alabiliyor.
+**Bitiş kriteri:** Structured analysis'e yalnız yeterli kalitedeki fincan görüntüleri giriyor.
 
 ---
 
-## FAZ 8 — Qwen doğruluk doğrulaması
+## FAZ 8 — Kahve AI pipeline
 
-- [ ] En az 100 gerçek fincan görselinden sabit test seti oluştur.
-- [ ] İnsan etiketli belirgin sembol/bölge ground-truth kaydı ekle.
-- [ ] High-confidence precision metriğini ölç.
-- [ ] False-positive metriğini ölç.
-- [ ] Aynı fotoğraf tekrar-test determinism/regresyon kontrolü.
-- [ ] En az 50 Türkçe fal/chat sabit prompt seti hazırla.
-- [ ] Tekrar, anlamsızlık, dil bozulması ve fal dışına çıkma testleri.
-- [ ] Gerekirse prompt/pipeline/fine-tune iterasyonu yap.
-- [ ] Hedef: high-confidence precision ≥ %80.
-- [ ] Hedef: high-confidence false-positive ≤ %15.
+- [ ] İlk Qwen aşaması: yalnız structured visual analysis.
+- [ ] `region`, `shape`, `rawConfidence`, view bilgisi modelini tanımla.
+- [ ] 2–3 fotoğrafı tek `merged cup analysis` altında birleştir.
+- [ ] Duplicate sembol deduplication.
+- [ ] Çelişkili bulguları uncertain/eleme.
+- [ ] Confidence self-score'u kör kullanmama.
+- [ ] İkinci Qwen aşaması: yalnız merged analysis üzerinden fal metni.
+- [ ] Genel / Aşk / İş-Para / Yol-Değişim sonuç blokları.
+- [ ] Ortak safety filter'dan geçir.
+- [ ] Sahte ilerleme yüzdesi yerine gerçek state'ler göster.
 
-**Bitiş kriteri:** Şartnamedeki kalite hedefleri karşılanmadan kahve AI modülü final işaretlenmez.
-
----
-
-## FAZ 9 — Tarot
-
-- [ ] 78 kart metadata’sını tanımla.
-- [ ] Kart adlarının Türkçe standardını sabitle.
-- [ ] Düz/ters kart state’i ekle.
-- [ ] Tek Kart açılımı.
-- [ ] Üç Kart: Geçmiş / Şimdi / Gelecek.
-- [ ] Beş Kart detaylı açılım.
-- [ ] Kart seçme/çekme animasyonlarını hafif ve akıcı yap.
-- [ ] Seçilen kart ID/ad/pozisyon/düz-ters bilgisini Qwen’e structured olarak ver.
-- [ ] Qwen’in kartı görselden yeniden tanımaya çalışmasını engelle.
-- [ ] Tarot yorum ekranını oluştur.
-
-**Bitiş kriteri:** 1/3/5 kart açılımları hatasız çalışıyor, kart görselleri premium kalite ve yorumlar doğru kart state’i üzerinden geliyor.
+**Bitiş kriteri:** Kahve sonucu gerçek structured image analysis'ten türetiliyor; tek promptla uydurma fal yok.
 
 ---
 
-## FAZ 10 — Fal sohbeti
+## FAZ 9 — Kahve doğruluk / regresyon QA
 
-- [ ] Her fal için benzersiz local conversation oluştur.
-- [ ] Kahve structured analysis + final yorum context’e bağla.
-- [ ] Tarot kart metadata + final yorum context’e bağla.
-- [ ] Fal dışı isteklere scope rejection ekle.
-- [ ] Prompt injection testleri ekle.
-- [ ] Sohbet geçmişini cihazda sakla.
-- [ ] Context büyüdüğünde local özetleme stratejisi uygula.
-- [ ] Chat UI: yazıyor state’i, gönderme, hata/retry.
-- [ ] Offline chat testini yap.
+- [ ] En az 100 gerçek fincan fotoğrafı/grubu.
+- [ ] İnsan etiketli görünür bölge/sembol ground truth.
+- [ ] 2–3 fotoğraflı aynı fincan cross-view örnekleri.
+- [ ] Sembol bulunmayan negatif örnekler.
+- [ ] Zor ışık/bulanık/yanıltıcı desen örnekleri.
+- [ ] Confidence calibration.
+- [ ] Hedef high-confidence precision ≥ %80.
+- [ ] Hedef high-confidence false-positive ≤ %15.
+- [ ] Aynı görüntü tekrarında ciddi sembol sıçraması testi.
 
-**Bitiş kriteri:** AI yalnız aktif fal hakkında doğal Türkçe sohbet ediyor ve genel asistana dönüşmüyor.
+**Bitiş kriteri:** Kahve kalite hedefleri sağlanmadan sonraki release aşamasına hazır sayılmaz.
 
 ---
 
-## FAZ 11 — Geçmiş Fallar ve yerel storage
+## FAZ 10 — Tarot engine + UI
+
+- [ ] 78 kart metadata + asset mapping.
+- [ ] Türkçe kart adları standardı.
+- [ ] `Random.secure()` veya eşdeğeri draw engine.
+- [ ] Aynı açılımda duplicate kart engeli.
+- [ ] Upright/reversed state mantığını merkezi config'e al.
+- [ ] Tek Kart.
+- [ ] 3 Kart: Geçmiş / Şimdi / Gelecek.
+- [ ] 5 Kart: Geçmiş / Şimdi / Gizli Etki / Yakın Gelecek / Sonuç-Tema.
+- [ ] Kullanıcı sorusu opsiyonel.
+- [ ] Deste karıştırma + kapalı kart seçme UX'i.
+- [ ] Kart flip/selection animasyonlarını hafif tut.
+- [ ] Qwen'e structured kart ID/ad/pozisyon/state gönder.
+- [ ] Qwen'in listede olmayan kart uydurmasını engelle.
+- [ ] Kart kart + kombinasyon + genel yorum üret.
+- [ ] Ortak safety filter'dan geçir.
+- [ ] 78 kart integrity otomatik testi.
+
+**Bitiş kriteri:** 1/3/5 kart açılımı deterministik metadata üzerinden hatasız çalışıyor; AI kartı görselden tahmin etmiyor.
+
+---
+
+## FAZ 11 — El Falı fotoğraf kalite + privacy kontrolü
+
+- [ ] 1–2 avuç içi fotoğraf desteği.
+- [ ] Kullanıcıya doğru çekim rehberi: açık avuç, iyi ışık, minimum gölge.
+- [ ] El/avuç varlık kontrolü.
+- [ ] Blur/resolution/exposure/occlusion kontrolü.
+- [ ] Avuç crop/normalize.
+- [ ] Yanlış görselde retry.
+- [ ] Ham avuç fotoğrafını varsayılan olarak inference sonrası sil.
+- [ ] Parmak izi/biometric template üretmeyen data modelini doğrula.
+
+**Bitiş kriteri:** El Falı yalnız yorum için gerekli geçici avuç görüntüsünü kullanıyor; kimlik/biometric sistemine dönüşmüyor.
+
+---
+
+## FAZ 12 — El Falı structured AI pipeline
+
+- [ ] İlk Qwen aşaması yalnız görünür palm özelliklerini structured çıkarır.
+- [ ] Aday alanlar:
+  - kalp çizgisi,
+  - baş çizgisi,
+  - yaşam çizgisi,
+  - kader çizgisi yalnız görünürse,
+  - kesişim/dallanma/yoğunluk gibi görünür yapı.
+- [ ] Görünmeyen çizgi için `not_visible/uncertain` state'i.
+- [ ] Confidence ham sinyal olarak tutulur; validation ile kalibre edilir.
+- [ ] İkinci aşama yalnız structured palm analysis üzerinden sembolik yorum üretir.
+- [ ] `geleneksel el falında / sembolik olarak / çağrıştırabilir` dil kuralı.
+- [ ] Deterministik kişilik hükmü engeli.
+- [ ] Sağlık, yaşam süresi, hamilelik, hassas özellik tahmini engeli.
+- [ ] Irk/etnik köken/din/siyasi görüş/cinsel yönelim çıkarımı engeli.
+- [ ] Gereksiz yaş/cinsiyet tahmini engeli.
+- [ ] Ortak safety filter'dan geçir.
+
+**Bitiş kriteri:** El Falı yalnız görünür çizgileri sembolik/eğlence amaçlı yorumluyor; teşhis/tavsiye/biometric inference yok.
+
+---
+
+## FAZ 13 — El Falı doğruluk / bias / safety QA
+
+- [ ] En az 100 gerçek avuç içi fotoğrafı/grubu.
+- [ ] İnsan etiketli görünür ana çizgi/bölge ground truth.
+- [ ] Farklı ten tonları, kamera kalitesi, ışık ve el pozisyonu çeşitliliği.
+- [ ] Görünmeyen çizgi/negatif örnekler.
+- [ ] False-positive ve confidence calibration.
+- [ ] Görünmeyen çizgi uydurma testi.
+- [ ] Hassas özellik çıkarımı jailbreak testi.
+- [ ] Sağlık/ölüm/hamilelik/tavsiye ihlali regresyonu.
+
+**Bitiş kriteri:** El Falı farklı görüntülerde tutarlı ve güvenli; yasak çıkarımlar üretmiyor.
+
+---
+
+## FAZ 14 — Ortak fal sonucu + Fal Sohbeti
+
+- [ ] Ortak result shell/component.
+- [ ] Zorunlu entertainment/professional-advice disclaimer.
+- [ ] Kahve structured context bağla.
+- [ ] Tarot metadata context bağla.
+- [ ] El structured palm context bağla.
+- [ ] Her fal için unique local conversation.
+- [ ] Chat yalnız aktif fal bağlamında.
+- [ ] Fal dışı scope rejection.
+- [ ] Prompt injection guard.
+- [ ] Context büyüyünce local summary.
+- [ ] Chat yazıyor/error/retry state.
+- [ ] Chat çıktısını da kesinlik/tavsiye safety filtresinden geçir.
+
+**Bitiş kriteri:** Üç fal türü aynı kontrollü sonuç ve sohbet katmanını kullanıyor; genel chatbota dönüşmüyor.
+
+---
+
+## FAZ 15 — Geçmiş Fallar + local storage
 
 - [ ] Local database/storage seç.
-- [ ] Kahve falını kaydet.
-- [ ] Tarot falını kaydet.
+- [ ] Kahve/Tarot/El fal kayıt tipleri.
+- [ ] Structured analysis + final text kaydı.
 - [ ] Chat geçmişini fala bağla.
-- [ ] Son falı dashboard’da göster.
+- [ ] Ham kahve/el fotoğraflarını varsayılan kalıcı kayda dahil etme.
+- [ ] Son falı dashboard'da göster.
 - [ ] Tek fal silme.
-- [ ] Tüm geçmişi silme.
-- [ ] Uygulama verisini sıfırlama.
-- [ ] Gereksiz fotoğrafları varsayılan olarak kalıcı tutmama politikasını uygula.
+- [ ] Tüm geçmiş silme.
+- [ ] App data reset.
 
-**Bitiş kriteri:** Kullanıcı verileri server olmadan cihazda yönetiliyor ve tamamen silinebiliyor.
-
----
-
-## FAZ 12 — Reklam monetizasyonu
-
-- [ ] Google AdMob entegrasyonu.
-- [ ] Consent/UMP akışı gereken bölgeler için ekle.
-- [ ] Kahve sonucu açma Rewarded Ad akışı.
-- [ ] Tarot sonucu açma Rewarded Ad akışı.
-- [ ] Fal sohbetinde mesaj paketi için Rewarded Ad akışı.
-- [ ] Dashboard/geçmiş için ölçülü banner/native alanları.
-- [ ] Interstitial yalnız doğal geçiş noktalarında.
-- [ ] Frequency-cap tanımla ve test et.
-- [ ] Reklam load timeout/retry/fallback mekanizması.
-- [ ] Reklam yüklenmezse kullanıcıyı dead-end’de bırakma.
-- [ ] Premium entitlement varsa hiçbir reklam çağrısı/görünümü oluşturma.
-
-**Bitiş kriteri:** Ücretsiz akış gelir üretiyor ama kullanım engellenmiyor; reklam spam’i ve accidental click riski yok.
+**Bitiş kriteri:** Üç fal türünün geçmişi server olmadan güvenli yönetiliyor ve tamamen silinebiliyor.
 
 ---
 
-## FAZ 13 — Premium aylık reklamsız abonelik
+## FAZ 16 — Reklam monetizasyonu
+
+Ayrıntı kaynağı: `MONETIZATION_V1.md`.
+
+- [ ] Google AdMob + UMP.
+- [ ] Merkezi `MonetizationConfig/AdPolicy`.
+- [ ] `rewardedAdsPerUnlock = 2`.
+- [ ] Kahve full result: 2 Rewarded.
+- [ ] Tarot full result: 2 Rewarded.
+- [ ] El Falı full result: 2 Rewarded.
+- [ ] Chat message pack: 2 Rewarded.
+- [ ] `0/2 → 1/2 → 2/2` transaction state.
+- [ ] Her reklam ayrı kullanıcı opt-in.
+- [ ] Tek reklamda entitlement verme.
+- [ ] `timedInterstitialEligibilitySeconds = 90`.
+- [ ] 90 sn yalnız eligibility; doğal geçişte interstitial.
+- [ ] Fotoğraf/AI/result reading/card-palm selection/chat/rewarded sırasında timed interstitial yok.
+- [ ] Telefon anchored adaptive banner.
+- [ ] Tablet/BlueStacks güvenli tek side rail opsiyonu.
+- [ ] Chat/analiz/çekim/seçim ekranında banner yok.
+- [ ] App Open çakışma kontrolleri.
+- [ ] Reklam load fail/retry; entitlement bypass yok.
+- [ ] Development yalnız test ad unit ID.
+
+**Bitiş kriteri:** Ücretsiz kullanıcıdaki bütün reklam akışları merkezi ve testli; yanlış tıklama, dead-end veya ad-bypass yok.
+
+---
+
+## FAZ 17 — Premium aylık reklamsız abonelik
 
 - [ ] Google Play Billing güncel entegrasyonu.
-- [ ] Tek ürün: aylık Premium / reklamsız.
-- [ ] Premium ekranı onaylanan UI yönünde.
-- [ ] Abonelik satın alma.
-- [ ] Satın alımları geri yükleme.
-- [ ] Entitlement cache/state yönetimi.
-- [ ] Abonelik sona erdiğinde ücretsiz reklamlı moda güvenli dönüş.
-- [ ] Premium aktifken tüm banner/rewarded/interstitial noktalarını kapat.
-- [ ] Sandbox/test purchase senaryoları.
+- [ ] Tek ürün: aylık reklamsız Premium.
+- [ ] Fiyat/dönem/otomatik yenileme/iptal açıklaması.
+- [ ] Purchase + pending + restore.
+- [ ] Renewal/grace/account hold/expiry/cancel.
+- [ ] Process-death recovery.
+- [ ] Entitlement cache/state.
+- [ ] Premium'da Rewarded/timed/App Open/banner/native tamamen kapalı.
+- [ ] Premium'da Kahve/Tarot/El/chat doğrudan kullanılıyor.
+- [ ] Subscription management link.
 
-**Bitiş kriteri:** Premium tek iş yapıyor: reklamları kaldırıyor; satın alma ve restore sağlam.
-
----
-
-## FAZ 14 — Güvenlik, gizlilik ve Google Play uygunluğu
-
-- [ ] Eğlence amaçlı fal açıklamasını uygun onboarding/ayar alanına koy.
-- [ ] Sağlık/ölüm/hamilelik/hukuk/garantili finansal sonuç gibi kesin iddiaları filtrele.
-- [ ] AI output report/bildirme mekanizması.
-- [ ] Privacy Policy hazırla.
-- [ ] Google Play Data Safety beyanını gerçek SDK davranışlarına göre doldur.
-- [ ] Açık kaynak lisans ekranı.
-- [ ] Qwen Apache-2.0 attribution/NOTICE gereksinimlerini ekle.
-- [ ] Üçüncü taraf görsel lisans listesini ekle.
-- [ ] Secrets taraması.
-- [ ] Loglarda kullanıcı fotoğrafı/chat/prompt sızıntısı olmadığını doğrula.
-
-**Bitiş kriteri:** Mağaza politikaları, lisans ve gizlilik tarafında bilinen bloklayıcı eksik kalmıyor.
+**Bitiş kriteri:** Premium aktif olduğunda uygulamada hiçbir reklam request/container görünmüyor; lifecycle doğru.
 
 ---
 
-## FAZ 15 — Release model dağıtımı
+## FAZ 18 — Privacy, AI safety, Play policy ve raporlama
 
-- [ ] Google Play on-demand model/asset pack yapısını ekle.
-- [ ] Modeli ana APK içine gömme.
-- [ ] İlk kullanımda model availability state’i.
-- [ ] İndirme ilerleme/hata/retry UI.
-- [ ] Model bir kez indiğinde offline inference.
-- [ ] SHA-256 / version doğrulaması.
-- [ ] `bundletool` local-testing ile Play’e yüklemeden asset delivery testini yap.
-- [ ] Internal test track ile gerçek Play dağıtım testini final aşamada yap.
+- [ ] Privacy Policy.
+- [ ] Data Safety.
+- [ ] Açık kaynak lisans ekranı + Qwen attribution/NOTICE.
+- [ ] Asset lisans listesi.
+- [ ] AI output in-app report/flag akışı.
+- [ ] Report endpoint minimum payload ve privacy kontrolü.
+- [ ] Ham kahve/el fotoğrafını report payload'a varsayılan ekleme.
+- [ ] Kullanıcının önemli hayat kararına emir/tavsiye veren AI çıktılarını regresyonla engelle.
+- [ ] Sağlık/hukuk/finans/hamilelik/ölüm kesinliği testi.
+- [ ] El Falı biometric/hassas trait yasağı testi.
+- [ ] Production sensitive logging kapalı.
+- [ ] Secrets scan.
+- [ ] Store listing'in eğlence amaçlı AI fal niteliğini yanıltmadan açıklaması.
 
-**Bitiş kriteri:** Debug local model ve release Play asset modeli aynı AI interface üzerinden çalışıyor.
-
----
-
-## FAZ 16 — Performans ve cihaz QA
-
-- [ ] 4 GB gerçek Android cihaz testi.
-- [ ] 6 GB gerçek Android cihaz testi.
-- [ ] 8 GB+ gerçek Android cihaz testi.
-- [ ] Düşük/orta/yüksek Android SoC testleri mümkün olduğunca yap.
-- [ ] Tablet testi.
-- [ ] BlueStacks testi.
-- [ ] App cold start ölç.
-- [ ] Qwen warm-up ölç.
-- [ ] İlk token süresi ölç.
-- [ ] Kahve tam analiz süresi ölç.
-- [ ] Peak RAM ölç.
-- [ ] 20+ ardışık fal stress testi.
-- [ ] Uzun chat memory leak testi.
-- [ ] Background → foreground lifecycle testi.
-- [ ] Low-memory kill/recovery testi.
-- [ ] Uçak modu AI testi.
-
-**Bitiş kriteri:** Crash/OOM/bloklayan performans problemi yok; UI AI sırasında responsive.
+**Bitiş kriteri:** Bilinen Play/privacy/lisans/safety bloklayıcısı yok ve üç fal türü ortak güvenlik standardına uyuyor.
 
 ---
 
-## FAZ 17 — Ağ izolasyon testi
+## FAZ 19 — Release model dağıtımı
 
-- [ ] Model kurulduktan sonra kahve AI trafiğini network inspector ile izle.
-- [ ] Tarot AI trafiğini izle.
-- [ ] Fal chatbot trafiğini izle.
-- [ ] Fotoğraf/prompt/chat için outbound request olmadığını doğrula.
-- [ ] Yalnız AdMob ve Google Play/Billing gibi izin verilen servislerin ağ erişimini doğrula.
-- [ ] Debug log/analytics üzerinden hassas içerik sızıntısı olmadığını kontrol et.
+- [ ] Release tarihindeki Google Play on-device model/asset delivery yöntemini yeniden doğrula.
+- [ ] Modeli base APK içine gömme.
+- [ ] Model availability + device RAM/ABI/disk check.
+- [ ] Download progress/cancel/retry.
+- [ ] SHA-256/version doğrulama.
+- [ ] Model update sonrası eski sürüm cleanup.
+- [ ] `bundletool` local testing.
+- [ ] Internal Play test track.
+- [ ] Debug local model ve release model aynı `ModelManager` interface'i.
 
-**Bitiş kriteri:** AI katmanı %100 on-device doğrulandı.
+**Bitiş kriteri:** Model dağıtımı production senaryosunda doğrulanmış; inference model indikten sonra offline.
 
 ---
 
-## FAZ 18 — Son regresyon ve release
+## FAZ 20 — Performans + responsive + stress QA
 
-- [ ] `SPECIFICATION.md` final checklist’i madde madde kontrol et.
-- [ ] Tüm unit/widget/integration testlerini çalıştır.
-- [ ] `flutter analyze` sıfır bloklayıcı hata.
-- [ ] Debug APK temiz build.
-- [ ] Signed release APK temiz build.
-- [ ] Signed release AAB temiz build.
-- [ ] Temiz cihazda APK install/open testi.
-- [ ] Upgrade testi.
-- [ ] Uninstall/reinstall testi.
-- [ ] Model missing/corrupt/reinstall senaryoları.
-- [ ] AdMob test ID → production ID geçiş kontrolü.
+- [ ] 4 GB gerçek cihaz.
+- [ ] 6 GB gerçek cihaz.
+- [ ] 8 GB+ gerçek cihaz.
+- [ ] Tablet.
+- [ ] BlueStacks.
+- [ ] App cold start.
+- [ ] Qwen warm-up.
+- [ ] First token.
+- [ ] Kahve full analysis süresi.
+- [ ] El full analysis süresi.
+- [ ] Peak RAM.
+- [ ] 20+ ardışık karma fal stress testi.
+- [ ] Uzun chat memory leak.
+- [ ] Background/foreground.
+- [ ] Low-memory kill/recovery.
+- [ ] Inference cancel.
+- [ ] Thermal uzun kullanım.
+- [ ] TalkBack + font scaling.
+- [ ] Banner tablet/telefon layout QA.
+
+**Bitiş kriteri:** Crash/OOM/bloklayan UX yok; üç fal türü ve reklam UI bütün hedef ekranlarda responsive.
+
+---
+
+## FAZ 21 — Ağ izolasyonu + gizlilik kanıtı
+
+- [ ] Kahve inference network inspection.
+- [ ] El inference network inspection.
+- [ ] Tarot/chat network inspection.
+- [ ] Fotoğraf/prompt/chat outbound inference request olmadığını doğrula.
+- [ ] Temp photo cleanup testi.
+- [ ] Auto Backup exclusion testi.
+- [ ] Production log leak testi.
+- [ ] Yalnız izin verilen AdMob/Play/Billing/user-triggered report ağlarını doğrula.
+
+**Bitiş kriteri:** AI fotoğraf/prompt/chat inference verisinin cihazdan çıkmadığı kanıtlandı.
+
+---
+
+## FAZ 22 — Final regresyon + teslim
+
+- [ ] `SPECIFICATION.md` checklist.
+- [ ] `V1_RELEASE_GATES.md` checklist.
+- [ ] `MONETIZATION_V1.md` checklist.
+- [ ] Tüm unit/widget/integration testleri.
+- [ ] `flutter analyze` bloklayıcı hata yok.
+- [ ] Debug APK clean build.
+- [ ] Signed release APK clean build.
+- [ ] Signed release AAB clean build.
+- [ ] Clean install/open.
+- [ ] Upgrade/uninstall/reinstall.
+- [ ] Model missing/corrupt/reinstall.
+- [ ] AdMob test → production ID kontrolü.
 - [ ] Billing test → production product ID kontrolü.
-- [ ] VersionCode/VersionName kontrolü.
-- [ ] Store listing metinleri/görselleri.
-- [ ] Privacy Policy/Data Safety son kontrol.
-- [ ] Final commit/tag oluştur.
-- [ ] Teslim APK + AAB + test raporu + commit SHA’yı kaydet.
+- [ ] VersionCode/VersionName.
+- [ ] Store listing + privacy URL.
+- [ ] Final commit/tag.
+- [ ] APK + AAB + test raporu + commit SHA kaydı.
 
-**Bitiş kriteri:** Şartname checklist’inde açık madde yok, temiz build kuruluyor ve uçtan uca gerçek cihaz testi geçiyor.
-
----
-
-# BLOKLAYICI “OLMAZSA OLMAZ” LİSTESİ
-
-Aşağıdakilerden biri eksikse uygulama final değildir:
-
-1. **LP FAL adı ve Mizan/Lefferion Prime logosu doğru kullanılmalı.**
-2. **Onaylanan açık/krem dashboard tasarım yönü korunmalı.**
-3. **AI üretimi uygulama içi statik görsel kullanılmamalı.**
-4. **Kahve fotoğrafı gerçek biçimde analiz edilmeli; tek promptla uydurma fal üretilmemeli.**
-5. **Structured visual analysis → fal üretimi iki aşamalı olmalı.**
-6. **Qwen lokal cihazda çalışmalı; Cloudflare/harici inference olmamalı.**
-7. **Testte model Google Play’e ihtiyaç duymadan local kurulabilmeli.**
-8. **Release’te model ana APK içine gömülmemeli; Play on-demand dağıtımı kullanılmalı.**
-9. **4/6/8 GB RAM sınıflarında QA yapılmalı.**
-10. **Tarot 1/3/5 kart akışı çalışmalı ve kart seti yüksek kaliteli/lisansı temiz olmalı.**
-11. **Fal chatbot yalnız mevcut fal bağlamında konuşmalı.**
-12. **Rewarded reklamlar kahve, tarot ve chat ekonomisine sağlam bağlanmalı.**
-13. **Premium yalnız aylık reklamsız abonelik olarak sade tutulmalı.**
-14. **Premium restore ve entitlement çalışmalı.**
-15. **Reklam yükleme hatası uygulamayı kilitlememeli.**
-16. **AI fotoğraf/prompt/chat verisini sunucuya göndermemeli.**
-17. **Geçmiş fallar yerelde saklanıp kullanıcı tarafından silinebilmeli.**
-18. **Qwen doğruluk test seti ve Türkçe regresyon testleri release gate olmalı.**
-19. **Yüksek riskli kesin fal iddiaları filtrelenmeli.**
-20. **Gizlilik, lisans, Google Play AI ve reklam/billing gereksinimleri tamamlanmalı.**
-21. **Tablet/BlueStacks dahil responsive taşma olmamalı.**
-22. **Signed APK ve AAB temiz build/install testinden geçmeli.**
-23. **V1 bitene kadar kapsam genişletilmemeli.**
+**Bitiş kriteri:** Açık checklist maddesi yok; APK/AAB temiz kuruluyor ve Kahve + Tarot + El Falı uçtan uca gerçek cihaz testini geçiyor.
 
 ---
 
-# ÇALIŞMA KURALI
+# BLOKLAYICI OLMAZSA OLMAZLAR
 
-Her faz tamamlandığında yalnız checkbox işaretlemek yeterli değildir. İlgili fazın **bitiş kriteri test edilerek doğrulanmalıdır**. Test kanıtı olmayan madde tamamlanmış sayılmaz.
+1. LP FAL adı ve mevcut Mizan/Lefferion Prime logosu.
+2. Açık/krem onaylı dashboard.
+3. Kahve + Tarot + El Falı V1'de tamam.
+4. Dekoratif uygulama görselleri lisanslı ve AI üretimi değil.
+5. Qwen lokal; AI inference verisi sunucuya gitmiyor.
+6. Kahve merged structured analysis kullanıyor.
+7. Tarot 78 kart engine/mapping sağlam.
+8. El Falı yalnız görünür avuç çizgilerini sembolik yorumluyor.
+9. El Falı biometric kimlik/parmak izi template'i oluşturmuyor.
+10. Kesin gelecek ve hayat kararı yönlendiren tavsiye yok.
+11. Sağlık/ölüm/hamilelik/hukuk/garantili finans kesinliği yok.
+12. Kahve + El confidence validation ile kalibre.
+13. Chat yalnız aktif fal bağlamında.
+14. Her free unlock 2 Rewarded Ad.
+15. Timed interstitial eligibility 90 saniye + doğal geçiş.
+16. Telefon/tablet banner yerleşimi güvenli.
+17. Premium'da hiçbir reklam yok.
+18. Geçmiş yerelde ve silinebilir.
+19. 4/6/8 GB + tablet/BlueStacks QA.
+20. Privacy/Data Safety/AI reporting/lisans tamam.
+21. Signed APK + AAB temiz testten geçmiş.
 
-Yeni özellik fikri çıkarsa `V2_BACKLOG.md` içine not edilebilir; **V1 koduna eklenmez**.
+**Test kanıtı olmayan checkbox tamamlanmış sayılmaz.**
