@@ -1,317 +1,239 @@
-# LP FAL — V1 Eksik Kontrolü ve Ek Release Gates
+# LP FAL — V1 Ek Release Gates
 
 **Durum:** ZORUNLU / normatif  
-**Bağlı dosyalar:** `SPECIFICATION.md`, `TODO.md`  
-**Amaç:** İlk şartname ve TODO denetiminde bulunan belirsizlikleri kapatmak. Bu dosyadaki maddeler V1 final checklist'inin parçasıdır. `SPECIFICATION.md` veya `TODO.md` ile çelişirse daha güvenli/daha açık olan bu gate uygulanır.
+**Bağlı dosyalar:** `SPECIFICATION.md`, `TODO.md`, `MONETIZATION_V1.md`
+
+Bu dosyadaki maddeler V1 final kontrolünün zorunlu parçasıdır.
 
 ---
 
-## 1. Ürün kapsamı ve dil kilidi
+## 1. Kapsam kilidi
 
-- V1 kullanıcı arayüzü ve fal üretim dili **Türkçe** olacaktır.
-- Kod i18n'e hazır tutulabilir ancak V1'e ikinci dil eklenmez.
-- V1'e push notification, burç, rüya, el falı, numeroloji, coin/kredi, sosyal özellik, genel AI asistanı veya yeni fal türü eklenmez.
-- Hedef kitle Google Play Console'da açıkça beyan edilir. Çocuklara yönelik tasarım yapılmaz; V1 için varsayılan mağaza hedefi yetişkin kullanıcıdır. Hedef kitle değiştirilirse Families/çocuk reklam politikaları release öncesi yeniden denetlenir.
+V1 fal türleri yalnız:
+- Kahve Falı,
+- Tarot Falı,
+- El Falı.
 
----
+V1'e burç/astroloji, rüya, numeroloji, sosyal özellik, coin/kredi veya genel AI asistanı eklenmez.
 
-## 2. Android kimliği ve platform temeli
-
-- Android `applicationId` V1 başlamadan sabitlenir. Önerilen kalıcı kimlik: `com.lefferionprime.lpfal`.
-- `minSdk`, `compileSdk` ve `targetSdk` kullanılan AI runtime ile uyumlu seçilir; release anındaki Google Play zorunlu target API seviyesi karşılanır.
-- Signing key/keystore repoya konmaz; güvenli yedeği ayrı tutulur.
-- Android Auto Backup / cloud backup kuralları açıkça tanımlanır. Fal geçmişi, sohbet, ham/geçici fotoğraflar, model dosyaları ve AI cache'leri izinsiz cloud backup'a gitmez.
+V1 kullanıcı arayüzü ve fal üretim dili Türkçe'dir; kod i18n'e hazır olabilir.
 
 ---
 
-## 3. Fotoğraf izinleri ve geçici dosya politikası
+## 2. Ortak güvenli yorum release gate'i
 
-- Galeri seçimi için mümkün olan Android sürümlerinde **System Photo Picker** tercih edilir; geniş galeri/storage izni istenmez.
-- Kamera izni yalnız kullanıcı kamera akışını başlattığında istenir.
-- Seçilen fotoğraflar yalnız app-private geçici alanda işlenir.
-- Ham fincan fotoğrafları varsayılan olarak fal üretildikten sonra silinir.
-- Production loglarında fotoğraf path'i, prompt, chat metni veya structured-analysis içeriği yazılmaz.
-- Kullanıcı verileri gelecekte model fine-tune/eğitimi için **varsayılan olarak kullanılmaz**; böyle bir özellik ancak ayrı açık opt-in ile yapılabilir.
+Kahve, Tarot, El ve Fal Sohbeti için:
+- kesin gelecek iddiası yok,
+- kullanıcıya önemli hayat kararı aldıran emir/tavsiye yok,
+- sağlık teşhisi yok,
+- ölüm/yaşam süresi tahmini yok,
+- hamilelik/doğurganlık kesinliği yok,
+- hukuki sonuç garantisi yok,
+- yatırım/şans/finansal kazanç garantisi yok.
 
----
+Sonuç dili sembolik ve koşullu olmalıdır: `çağrıştırabilir`, `geleneksel yorumlarda`, `sembolik olarak`.
 
-## 4. Çoklu fincan fotoğrafı birleştirme
+Her fal sonucu görünür entertainment/professional-advice disclaimer içerir.
 
-2–3 fotoğraf birbirinden bağımsız üç fal gibi yorumlanmayacaktır.
-
-Zorunlu pipeline:
-1. Her fotoğrafta kullanılabilir fincan bölgelerini çıkar.
-2. Aynı fincanın farklı açılarından gelen sembolleri konum/benzerlik açısından eşleştir.
-3. Aynı sembolü birden fazla fotoğrafta gördüğü için iki/üç kez sayma.
-4. Fotoğraflar arasında çelişen bulguları `uncertain` olarak işaretle veya ele.
-5. Final structured-analysis tek bir **merged cup analysis** üretir.
-6. Fal metni yalnız merged analysis üzerinden oluşturulur.
-
-Release test seti tek fotoğraf örneklerinin yanında gerçek 2–3 fotoğraflı fincan grupları da içermelidir.
+Safety yalnız system prompt'a bırakılmaz; uygulama seviyesinde output kontrolü bulunur.
 
 ---
 
-## 5. Qwen confidence kalibrasyonu — kritik
+## 3. Fotoğraf ve veri gizliliği
 
-Qwen'in metin olarak ürettiği `confidence: 0.82` değeri **tek başına istatistiksel olasılık kabul edilmeyecektir**.
-
-- Self-reported confidence yalnız ham sinyal olarak kullanılır.
-- Gerçek threshold'lar 100+ fincan doğrulama seti üzerinde kalibre edilir.
-- Cross-view agreement, crop tekrarları ve false-positive ölçümü threshold kararına dahil edilir.
-- High/medium/low sınıfları validation sonuçlarıyla sabitlenir.
-- Model/prompt/generation parametreleri değiştiğinde kalibrasyon testi yeniden çalıştırılır.
-- Test setinde `hiç belirgin sembol yok`, zor ışık, bulanıklık, yanıltıcı desen ve negatif örnekler bulunmalıdır.
-
-**Release gate:** Görsel modelin kendi confidence sayısını kör biçimde kullanmak yasaktır.
+Kahve + El için:
+- System Photo Picker/scoped yaklaşım tercih edilir.
+- Broad storage permission mümkün olduğunca yok.
+- Kamera izni yalnız kullanıcı capture başlatınca.
+- Fotoğraf app-private geçici alanda.
+- Ham görüntüler varsayılan inference sonrası silinir.
+- Production loglarında fotoğraf path/prompt/chat/structured-analysis yok.
+- Fotoğraf/chat/fal verileri varsayılan eğitim verisine dönüşmez.
+- Auto Backup ile ham fotoğraf/model/AI cache izinsiz buluta gitmez.
 
 ---
 
-## 6. AI sürümleme ve yeniden üretilebilirlik
+## 4. Kahve görsel kalite gate'i
 
-Her release aşağıdakileri kayıt altına alır:
-- kaynak Qwen model/revision,
-- quantization türü,
+- 2–3 fotoğraf tek `merged cup analysis` üretir.
+- Aynı sembol farklı açılarda duplicate sayılmaz.
+- Çelişkili bulgu uncertain/elenmiş state'e alınır.
+- Qwen self-reported confidence gerçek olasılık kabul edilmez.
+- Threshold validation setiyle kalibre edilir.
+- En az 100 gerçek fincan fotoğrafı/grubu QA seti.
+- Negatif ve zor görüntüler dahil.
+- Hedef high-confidence precision ≥ %80.
+- Hedef high-confidence false-positive ≤ %15.
+
+---
+
+## 5. Tarot draw gate'i
+
+- 78 kart metadata + asset mapping eksiksiz.
+- Aynı açılımda aynı kart iki kez yok.
+- Draw uygulama engine'i tarafından güvenilir RNG ile yapılır.
+- Qwen kart seçmez ve kartı görselden yeniden tanımaz.
+- Kart ID/ad/pozisyon/upright-reversed structured verilir.
+- 1/3/5 kart açılımları testli.
+
+---
+
+## 6. El Falı özel güvenlik ve doğruluk gate'i
+
+El Falı yalnız geleneksel palmistry sembolizmini eğlence amaçlı yorumlar.
+
+Zorunlu:
+- el/avuç varlık ve kalite kontrolü,
+- yalnız görünür çizgi/bölge analizi,
+- görünmeyen çizgi için `not_visible/uncertain`,
+- structured palm analysis → sembolik yorum iki aşaması,
+- confidence validation ile kalibre,
+- en az 100 gerçek avuç görüntüsü/grubu test seti,
+- farklı ışık, ten tonu, kamera ve poz çeşitliliği.
+
+Kesin yasak:
+- fingerprint template,
+- biyometrik kimlik doğrulama/eşleştirme,
+- kişiyi benzersiz tanıma,
+- sağlık/hastalık çıkarımı,
+- ölüm/yaşam süresi çıkarımı,
+- hamilelik/doğurganlık çıkarımı,
+- ırk/etnik köken, din, siyasi görüş, cinsel yönelim gibi hassas özellik çıkarımı,
+- gereksiz yaş/cinsiyet tahmini,
+- deterministik kişilik hükmü.
+
+---
+
+## 7. AI sürümleme ve on-device gate'i
+
+Her release kaydı:
+- Qwen model/revision,
+- quantization,
 - model SHA-256,
-- vision projector/encoder dosyası ve SHA-256 (ayrıysa),
-- system prompt sürümü,
-- coffee-analysis prompt sürümü,
-- tarot prompt sürümü,
-- chat prompt sürümü,
-- temperature/top-p/top-k/max token gibi generation ayarları,
-- kullanılan native inference runtime sürümü.
+- vision projector/encoder SHA-256 varsa,
+- runtime sürümü,
+- coffee/tarot/palm/chat/safety prompt sürümleri,
+- generation parametreleri.
 
-QA regresyonu bu sürüm kimliğiyle ilişkilendirilir. Model veya prompt değişikliği AI regresyon testini tekrar tetikler.
+Model veya prompt değişince regresyon tekrar çalışır.
 
----
+AI inference için fotoğraf/prompt/chat sunucuya gönderilmez. Cloudflare/harici inference yok.
 
-## 7. Model indirme / cihaz uygunluğu
-
-- Uygulama model indirmeden önce cihaz RAM/ABI/runtime uyumluluğunu kontrol eder.
-- Gerekli boş depolama alanı kontrol edilir; indirme boyutu kullanıcıya açıkça gösterilir.
-- Model indirme kullanıcı tarafından başlatılabilir, iptal/retry destekler ve UI'ı kilitlemez.
-- Eksik/yarım/corrupt model hiçbir zaman inference'a verilmez.
-- Model update sonrası eski sürüm güvenli biçimde temizlenir.
-- AI işi iptal edilebilir; kullanıcı ekranı terk ettiğinde veya sistem low-memory durumuna girdiğinde runaway inference oluşmaz.
-- Thermal throttling/aşırı ısınma senaryosu gözlemlenir; uzun inference'ta UI donmamalıdır.
-
-### Play dağıtım notu
-`Play for On-device AI` 2026 itibarıyla beta durumunda olduğundan production release sırasında resmi kullanılabilirlik yeniden doğrulanacaktır. Kullanılan Play dağıtım yöntemi değişse bile:
-- model base APK içine gömülmez,
-- harici Cloudflare/CDN zorunluluğu oluşturulmaz,
-- debug/local model yolu korunur,
-- model bir kez geldikten sonra inference cihazda kalır.
+Debug model Play olmadan local kurulabilir. Release model base APK içine gömülmez; release tarihindeki Play on-device/asset delivery yöntemi yeniden doğrulanır.
 
 ---
 
-## 8. Ücretsiz / offline kullanım politikası
+## 8. Monetizasyon gate'i
 
-Yerel AI offline çalışabilir; fakat monetizasyon gate'i ayrı ele alınır.
+`MONETIZATION_V1.md` bu konuda ana kaynaktır.
 
-### Ücretsiz kullanıcı
-- Daha önce reklamlarla açılmış fal sonuçları offline okunabilir.
-- Yeni kahve falının tam sonucunu açmak için **2 başarılı Rewarded Ad** gerekir.
-- Yeni tarot yorumunu açmak için **2 başarılı Rewarded Ad** gerekir.
-- Gated chat mesaj paketini açmak için **2 başarılı Rewarded Ad** gerekir.
-- İlk reklamın tamamlanması tek başına hiçbir içerik/mesaj hakkı açmaz.
-- İkinci reklam da başarılı `reward earned` callback'i üretmeden reward entitlement verilmez.
-- İnternet/reklam yoksa uygulama crash/freeze olmaz; kullanıcı `Tekrar Dene` veya geri çıkış alır.
-- **Reklam başarısız oldu diye ücretsiz entitlement otomatik verilmez.** Bu, airplane-mode ile reklam bypass'ını engeller.
+### Rewarded
+Ücretsiz kullanıcıda:
+- Kahve full result = 2 Rewarded,
+- Tarot full result = 2 Rewarded,
+- El Falı full result = 2 Rewarded,
+- gated chat pack = 2 Rewarded.
 
-### Premium kullanıcı
-- Model kurulmuşsa kahve, tarot, geçmiş ve fal sohbeti reklamsız/offline kullanılabilir.
-- Premium durumu Play Billing ile çevrimiçiyken periyodik doğrulanır; yalnız local boolean kalıcı kaynak kabul edilmez.
+- UI `0/2 → 1/2 → 2/2`.
+- Her reklam ayrı kullanıcı opt-in.
+- İlk reklam tek başına entitlement vermez.
+- İkinci başarılı `reward earned` callback gelmeden unlock yok.
+- Ad failure ücretsiz entitlement üretmez.
 
----
+### Timed interstitial
+V1 sabiti:
+`timedInterstitialEligibilitySeconds = 90`
 
-## 9. Reklam ekonomisi — V1 varsayılanı
+- Yalnız foreground aktif kullanım sayılır.
+- 90 sn dolması sadece eligibility oluşturur.
+- Reklam ancak sonraki güvenli/doğal geçişte gösterilir.
+- Fotoğraf capture/select, Qwen inference, fal sonucu aktif okuma, tarot selection, el capture/analysis, chat typing/generation, rewarded, billing/consent sırasında gösterilmez.
 
-V1'de monetizasyon davranışı belirsiz bırakılmayacaktır.
+### Banner
+- Telefon: tek anchored adaptive banner, yalnız güvenli ekranlarda.
+- Tablet/BlueStacks: gerekirse tek side rail/kolon.
+- Chat, analiz, capture, tarot selection, el analiz ekranında banner yok.
+- CTA/nav/input'a yanlış tıklama doğuracak yakınlık yok.
 
-### 9.1 İki reklam = bir reward kuralı
-- **Kahve Falı:** her yeni tam fal sonucunu açmak için **2 Rewarded Ad**.
-- **Tarot:** her yeni açılımın tam yorumunu açmak için **2 Rewarded Ad**.
-- **Fal Sohbeti:** fal başına ilk takip sorusu ücretsiz; ardından her 3 kullanıcı mesajlık paketi açmak için **2 Rewarded Ad**.
-- Kullanıcıya reward başlamadan önce açıkça `Bu içeriği açmak için 2 reklam izle` bilgisi gösterilir.
-- UI ilerlemesi açık biçimde `0/2 → 1/2 → 2/2` gösterilir.
-- Her rewarded reklam **ayrı ayrı kullanıcı tarafından olumlu biçimde başlatılır**; ilk reklam bitti diye ikinci reklam otomatik açılmaz.
-- İlk reklam tamamlandığında `1/2 tamamlandı` state'i yazılır ancak reward verilmez.
-- İkinci reklamın başarılı `reward earned` callback'i geldikten sonra tek reward entitlement açılır.
-- İlk reklam tamamlandıktan sonra ikinci reklam geçici olarak yüklenemezse kullanıcı ilk reklamı anında tekrar izlemek zorunda bırakılmaz; aynı reward transaction içindeki `1/2` ilerlemesi güvenli biçimde korunur ve kullanıcı ikinci reklamı daha sonra tekrar deneyebilir.
-- Reward transaction başka fal/açılım/chat paketine aktarılamaz; her gate kendi `rewardTransactionId` ile izlenir.
-- Tamamlanmamış reward transaction sonsuza kadar tutulmaz; uygulama tarafından belirlenen makul bir süre/akış sonunda expire edilir.
-
-### 9.2 Genel reklam kuralları
-- Rewarded reklam kullanıcı tarafından açıkça başlatılır; otomatik açılmaz.
-- Ödül yalnız ikinci reklam dahil gerekli tüm SDK `reward earned` callback'leri tamamlandıktan sonra verilir.
-- Rewarded tamamlanmadan entitlement yazılmaz.
-- Interstitial, rewarded gösteriminden hemen önce/sonra gösterilmez ve sonuç okuma/chat akışını bölmez.
-- Interstitial için V1 varsayılan frequency-cap: kullanıcı başına en fazla 1 gösterim / 10 dakika ve yalnız doğal ekran geçişinde.
-- Banner/native yalnız dashboard/geçmiş gibi uygun yüzeylerde; AI sonuç metninin içine karışmaz.
-- Premium entitlement aktifse ad request dahi mümkün olduğunca oluşturulmaz.
-
-Bu değerler kodda tek bir `MonetizationConfig` altında tutulur; UI içine dağınık magic number olarak yazılmaz. V1 sabiti: `rewardedAdsPerUnlock = 2`.
+### Premium
+Premium aktifken Rewarded, timed interstitial, App Open, banner/native dahil **bütün reklam sistemi kapalıdır**.
 
 ---
 
-## 10. Premium / Play Billing lifecycle
+## 9. Billing gate'i
 
-Premium tek ürün olmaya devam eder: **aylık, otomatik yenilenen, reklamsız kullanım**.
+Tek ürün: aylık otomatik yenilenen reklamsız Premium.
 
-Satın alma ekranı satın almadan önce açıkça göstermelidir:
-- yerel para birimindeki fiyat,
-- aylık dönem,
-- otomatik yenileme,
-- nasıl iptal/yönetileceği,
-- Premium'un yalnız reklamları kaldırdığı.
-
-Zorunlu Billing durumları:
-- successful purchase,
-- pending purchase,
-- canceled purchase flow,
-- restore/query existing purchase,
+Test zorunlu:
+- purchase,
+- pending,
+- cancel flow,
+- restore/query,
 - renewal,
 - grace period,
 - account hold,
-- expired/canceled subscription,
-- app process death sırasında yarım kalan purchase callback recovery.
-
-Grace period'da Play'in aktif kabul ettiği entitlement korunur; account hold/expiry durumunda reklamlı moda dönüş test edilir. `Aboneliği Yönet` bağlantısı kullanıcıyı Google Play subscription management ekranına götürür.
-
-Backend olmadan mutlak anti-tamper garanti edilmez; V1'de source of truth çevrimiçiyken Google Play Billing state'idir, cache yalnız offline UX içindir.
+- expiry/cancel,
+- process-death recovery,
+- subscription management link.
 
 ---
 
-## 11. AI içerik raporlama — ağ politikasındaki tek açık istisna
+## 10. AI report / mağaza / privacy gate'i
 
-Google Play generative-AI uygulamalarında uygulama içi report/flag mekanizması gerektirdiği için yalnız kullanıcı tarafından başlatılan **AI içerik raporu** minimal bir HTTPS endpoint'e gönderilebilir.
-
-Kurallar:
-- Bu endpoint AI inference yapmaz.
-- Otomatik telemetry değildir.
-- Kullanıcı rapor butonuna basmadan veri gönderilmez.
-- Varsayılan payload: report reason, ilgili AI metninin seçilen bölümü, app/model/prompt version, zaman damgası.
-- Ham fincan fotoğrafı varsayılan olarak gönderilmez.
-- Kullanıcı açıklama ekleyebilir.
-- Report endpoint sağlayıcısı release öncesi sabitlenir ve Privacy Policy'de açıklanır.
-
-Bunun dışında fotoğraf/prompt/chat AI amacıyla sunucuya çıkmaz.
+- Uygulama içi AI output report/flag akışı.
+- Kullanıcı başlatmadan report verisi gönderilmez.
+- Ham kahve/el fotoğrafı report payload'a varsayılan eklenmez.
+- Privacy Policy kalıcı HTTPS URL.
+- Data Safety gerçek SDK davranışına göre.
+- Qwen lisans/NOTICE.
+- Üçüncü taraf asset lisansları.
+- AdMob UMP gereken bölgelerde request öncesi.
+- Development yalnız test reklam ID'leri.
 
 ---
 
-## 12. Güvenlik / içerik filtresi genişletmesi
+## 11. Ek QA matrisi
 
-Mevcut yüksek-risk filtrelerine ek olarak:
-- kendine zarar verme teşviki,
-- şiddet/suç yönlendirmesi,
-- çocuklara yönelik uygunsuz içerik,
-- nefret/taciz,
-- cinsel içerik üretme talebi,
-- kullanıcıyı korkutmak amacıyla kesin felaket/ölüm iddiası
-engellenir veya güvenli, fal bağlamında nötr yanıta dönüştürülür.
-
-Chat scope kontrolü yalnız prompt ile bırakılmaz; uygulama katmanında da kategori/sistem kuralı bulunur.
-
----
-
-## 13. Tarot draw doğruluğu
-
-- Aynı açılım içinde aynı kart iki kez çekilmez.
-- Kart seçimi biased olmamalıdır; `Random.secure()` veya eşdeğer güvenilir RNG kullanılabilir.
-- Düz/ters state seçimi kart draw'dan ayrı ve açık bir kuralla üretilir.
-- 78 kart metadata + görsel mapping için otomatik bütünlük testi bulunur.
-- Eksik/yanlış kart asset'i release'i bloklar.
-
----
-
-## 14. Erişilebilirlik / UI kalite gate'i
-
-- Dokunma hedefleri Android önerisine uygun, mümkün olduğunca en az 48dp.
-- TalkBack için anlamlı semantics/labels.
-- Font scaling'de kritik CTA ve sonuç metinleri taşmaz.
-- Kontrast yalnız dekoratif değil, gerçek ekran görüntüsü üzerinde kontrol edilir.
-- Loading/AI state'leri yalnız animasyonla değil metin/semantic state ile de anlaşılır.
+- [ ] Kahve multi-view fusion.
+- [ ] Kahve confidence calibration.
+- [ ] Kahve negatif görüntüler.
+- [ ] El görünmeyen çizgi uydurmama.
+- [ ] El farklı ten tonu/ışık/kamera çeşitliliği.
+- [ ] El biometric/hassas trait jailbreak testi.
+- [ ] Kesinlik/tavsiye safety regresyonu.
+- [ ] Temp photo cleanup.
+- [ ] Photo Picker permission.
+- [ ] Auto Backup exclusion.
+- [ ] `0/2 → 1/2 → 2/2` reward state.
+- [ ] 90 saniye timed eligibility.
+- [ ] Timed ad yalnız doğal geçiş.
+- [ ] Telefon banner güvenli spacing.
+- [ ] Tablet/BlueStacks side banner layout.
+- [ ] Premium'da sıfır ad request/container.
+- [ ] Billing pending/grace/account-hold/expiry.
+- [ ] Network isolation Kahve + El + Chat.
+- [ ] Production sensitive logs kapalı.
+- [ ] TalkBack/font scaling.
 
 ---
 
-## 15. Analytics / telemetry politikası
+# BLOKLAYICI ÖZET
 
-V1'e ürün analytics veya üçüncü taraf davranış izleme SDK'sı varsayılan olarak eklenmez.
+Aşağıdakilerden biri eksikse final yok:
 
-İzin verilen ağ bileşenleri:
-- AdMob + UMP,
-- Google Play Billing / Play delivery,
-- kullanıcı tarafından açıkça başlatılmış AI report endpoint'i.
+1. Kahve + Tarot + El Falı tamam.
+2. Kesin gelecek ve karar yönlendiren tavsiye yok.
+3. El Falı biometric kimlik sistemi değil.
+4. Kahve/El yalnız görünür görsel bulguyu yorumluyor.
+5. Kahve/El confidence kalibre.
+6. Qwen lokal inference.
+7. Her free reward unlock 2 Rewarded.
+8. Timed interstitial 90 sn eligibility + doğal geçiş.
+9. Banner güvenli yerleşim.
+10. Premium tamamen reklamsız.
+11. Fotoğraflar varsayılan geçici ve eğitim verisi değil.
+12. Privacy/Data Safety/AI report/lisans tamam.
+13. 4/6/8 GB + tablet/BlueStacks QA.
+14. Signed APK/AAB clean test başarılı.
 
-Yeni analytics/crash SDK eklenmesi ayrı karar ve Privacy/Data Safety güncellemesi gerektirir. Eğer crash reporting eklenirse prompt/chat/fotoğraf ve structured analysis scrub edilmeden gönderilemez.
-
----
-
-## 16. AdMob / mağaza release ayrıntıları
-
-- Development'ta yalnız AdMob test ad unit ID'leri kullanılır.
-- Production ID geçişi release checklist'te doğrulanır.
-- UMP consent akışı gerekli bölgelerde reklam request'inden önce tamamlanır.
-- `app-ads.txt` uygulanabilirliği/domain yayını release öncesi kontrol edilir.
-- Store listing, uygulamanın AI fal ürettiğini ve Premium'un reklamsız abonelik olduğunu yanıltıcı olmayacak şekilde açıklar.
-- Privacy Policy için herkese açık kalıcı HTTPS URL bulunur.
-- Support/Privacy/Open Source Licenses/Subscription Management erişimi Profil/Ayarlar içinde bulunur.
-
----
-
-## 17. Ek QA matrisi
-
-Mevcut testlere ek olarak:
-- [ ] 2–3 fotoğraflı aynı fincan cross-view fusion testi.
-- [ ] Sembol bulunmayan negatif fincan testleri.
-- [ ] Confidence calibration testi.
-- [ ] Photo Picker izin testi; broad storage permission olmadığını doğrula.
-- [ ] Geçici fotoğraf cleanup testi.
-- [ ] Android Auto Backup exclusion testi.
-- [ ] Model download öncesi disk-space testi.
-- [ ] Download cancel/resume/retry testi.
-- [ ] Inference cancel/background/low-memory testi.
-- [ ] Thermal/uzun inference testi.
-- [ ] Free offline ad-bypass testi.
-- [ ] İlk rewarded tamamlandığında reward verilmediği testi.
-- [ ] `0/2 → 1/2 → 2/2` progress/state testi.
-- [ ] Her iki rewarded reklamın ayrı kullanıcı opt-in'i gerektirdiği testi.
-- [ ] İkinci rewarded callback olmadan entitlement verilmediği testi.
-- [ ] İlk reklam sonrası ikinci reklam load-fail/retry ve progress korunumu testi.
-- [ ] Reward transaction'ın başka fala/açılıma taşınamadığı testi.
-- [ ] Interstitial frequency-cap testi.
-- [ ] Pending billing testi.
-- [ ] Grace period testi.
-- [ ] Account hold/expiry testi.
-- [ ] Subscription management link testi.
-- [ ] AI report gönderimi ve privacy payload testi.
-- [ ] Production build'de hassas debug logging kapalı testi.
-- [ ] 78 tarot card metadata/asset integrity testi.
-- [ ] TalkBack + font scaling smoke testi.
-
----
-
-# EK BLOKLAYICI OLMAZSA OLMAZLAR
-
-Aşağıdakilerden biri eksikse V1 final değildir:
-
-1. Qwen self-reported confidence kalibre edilmeden gerçek olasılık olarak kullanılmıyor.
-2. 2–3 fincan fotoğrafı tek merged analysis'e birleştiriliyor; duplicate semboller sayılmıyor.
-3. Galeri için broad storage izni yerine Photo Picker/scoped yaklaşım kullanılıyor.
-4. Ham fincan fotoğrafları varsayılan olarak inference sonrası temizleniyor.
-5. Kullanıcı fal/chat/fotoğrafları varsayılan olarak eğitim verisine dönüşmüyor.
-6. Free offline kullanım Rewarded Ad gate'ini bypass edemiyor.
-7. **Her ücretsiz reward unlock için 2 Rewarded Ad gerekiyor; tek reklam reward vermiyor.**
-8. İki reklam da ayrı ayrı kullanıcı tarafından başlatılıyor ve UI `0/2 → 1/2 → 2/2` ilerlemesini açık gösteriyor.
-9. Reward yalnız ikinci reklam dahil gerekli iki başarılı `reward earned` callback'inden sonra veriliyor.
-10. Premium Billing pending/grace/account-hold/expiry senaryoları test edilmiş.
-11. Model/prompt/runtime sürümü ve SHA'ları release ile kayıtlı.
-12. Model download öncesi cihaz ve disk uygunluğu kontrol ediliyor.
-13. Play model dağıtım yöntemi production release tarihinde yeniden doğrulanmış.
-14. Kullanıcı tarafından başlatılan in-app AI report akışı çalışıyor.
-15. Android backup ile hassas yerel veriler izinsiz buluta gitmiyor.
-16. Production loglarında fotoğraf/prompt/chat sızıntısı yok.
-17. Tarot 78 kart mapping integrity testi geçiyor.
-18. TalkBack/font scaling temel erişilebilirlik testi geçiyor.
-19. V1 Türkçe kapsamı korunuyor; plansız çok-dil veya yeni özellik eklenmiyor.
-
-**Bu dosya `TODO.md` Faz 18 final kontrolünün zorunlu girdisidir.**
+**Bu dosya `TODO.md` final fazının zorunlu girdisidir.**
