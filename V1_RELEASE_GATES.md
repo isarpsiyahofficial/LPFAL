@@ -108,10 +108,12 @@ QA regresyonu bu sürüm kimliğiyle ilişkilendirilir. Model veya prompt deği�
 Yerel AI offline çalışabilir; fakat monetizasyon gate'i ayrı ele alınır.
 
 ### Ücretsiz kullanıcı
-- Daha önce reklamla açılmış fal sonuçları offline okunabilir.
-- Yeni kahve falının tam sonucunu açmak için başarılı Rewarded Ad gerekir.
-- Yeni tarot yorumunu açmak için başarılı Rewarded Ad gerekir.
-- Gated chat mesaj paketi açmak için başarılı Rewarded Ad gerekir.
+- Daha önce reklamlarla açılmış fal sonuçları offline okunabilir.
+- Yeni kahve falının tam sonucunu açmak için **2 başarılı Rewarded Ad** gerekir.
+- Yeni tarot yorumunu açmak için **2 başarılı Rewarded Ad** gerekir.
+- Gated chat mesaj paketini açmak için **2 başarılı Rewarded Ad** gerekir.
+- İlk reklamın tamamlanması tek başına hiçbir içerik/mesaj hakkı açmaz.
+- İkinci reklam da başarılı `reward earned` callback'i üretmeden reward entitlement verilmez.
 - İnternet/reklam yoksa uygulama crash/freeze olmaz; kullanıcı `Tekrar Dene` veya geri çıkış alır.
 - **Reklam başarısız oldu diye ücretsiz entitlement otomatik verilmez.** Bu, airplane-mode ile reklam bypass'ını engeller.
 
@@ -125,18 +127,29 @@ Yerel AI offline çalışabilir; fakat monetizasyon gate'i ayrı ele alınır.
 
 V1'de monetizasyon davranışı belirsiz bırakılmayacaktır.
 
-- **Kahve Falı:** her yeni tam fal sonucu için 1 Rewarded Ad.
-- **Tarot:** her yeni açılımın tam yorumu için 1 Rewarded Ad.
-- **Fal Sohbeti:** fal başına ilk takip sorusu ücretsiz; ardından her 3 kullanıcı mesajlık paket için 1 Rewarded Ad.
+### 9.1 İki reklam = bir reward kuralı
+- **Kahve Falı:** her yeni tam fal sonucunu açmak için **2 Rewarded Ad**.
+- **Tarot:** her yeni açılımın tam yorumunu açmak için **2 Rewarded Ad**.
+- **Fal Sohbeti:** fal başına ilk takip sorusu ücretsiz; ardından her 3 kullanıcı mesajlık paketi açmak için **2 Rewarded Ad**.
+- Kullanıcıya reward başlamadan önce açıkça `Bu içeriği açmak için 2 reklam izle` bilgisi gösterilir.
+- UI ilerlemesi açık biçimde `0/2 → 1/2 → 2/2` gösterilir.
+- Her rewarded reklam **ayrı ayrı kullanıcı tarafından olumlu biçimde başlatılır**; ilk reklam bitti diye ikinci reklam otomatik açılmaz.
+- İlk reklam tamamlandığında `1/2 tamamlandı` state'i yazılır ancak reward verilmez.
+- İkinci reklamın başarılı `reward earned` callback'i geldikten sonra tek reward entitlement açılır.
+- İlk reklam tamamlandıktan sonra ikinci reklam geçici olarak yüklenemezse kullanıcı ilk reklamı anında tekrar izlemek zorunda bırakılmaz; aynı reward transaction içindeki `1/2` ilerlemesi güvenli biçimde korunur ve kullanıcı ikinci reklamı daha sonra tekrar deneyebilir.
+- Reward transaction başka fal/açılım/chat paketine aktarılamaz; her gate kendi `rewardTransactionId` ile izlenir.
+- Tamamlanmamış reward transaction sonsuza kadar tutulmaz; uygulama tarafından belirlenen makul bir süre/akış sonunda expire edilir.
+
+### 9.2 Genel reklam kuralları
 - Rewarded reklam kullanıcı tarafından açıkça başlatılır; otomatik açılmaz.
-- Ödül yalnız SDK `reward earned` callback'i geldikten sonra verilir.
+- Ödül yalnız ikinci reklam dahil gerekli tüm SDK `reward earned` callback'leri tamamlandıktan sonra verilir.
 - Rewarded tamamlanmadan entitlement yazılmaz.
 - Interstitial, rewarded gösteriminden hemen önce/sonra gösterilmez ve sonuç okuma/chat akışını bölmez.
 - Interstitial için V1 varsayılan frequency-cap: kullanıcı başına en fazla 1 gösterim / 10 dakika ve yalnız doğal ekran geçişinde.
 - Banner/native yalnız dashboard/geçmiş gibi uygun yüzeylerde; AI sonuç metninin içine karışmaz.
 - Premium entitlement aktifse ad request dahi mümkün olduğunca oluşturulmaz.
 
-Bu değerler kodda tek bir `MonetizationConfig` altında tutulur; UI içine dağınık magic number olarak yazılmaz.
+Bu değerler kodda tek bir `MonetizationConfig` altında tutulur; UI içine dağınık magic number olarak yazılmaz. V1 sabiti: `rewardedAdsPerUnlock = 2`.
 
 ---
 
@@ -259,7 +272,12 @@ Mevcut testlere ek olarak:
 - [ ] Inference cancel/background/low-memory testi.
 - [ ] Thermal/uzun inference testi.
 - [ ] Free offline ad-bypass testi.
-- [ ] Reward callback olmadan entitlement verilmediği testi.
+- [ ] İlk rewarded tamamlandığında reward verilmediği testi.
+- [ ] `0/2 → 1/2 → 2/2` progress/state testi.
+- [ ] Her iki rewarded reklamın ayrı kullanıcı opt-in'i gerektirdiği testi.
+- [ ] İkinci rewarded callback olmadan entitlement verilmediği testi.
+- [ ] İlk reklam sonrası ikinci reklam load-fail/retry ve progress korunumu testi.
+- [ ] Reward transaction'ın başka fala/açılıma taşınamadığı testi.
 - [ ] Interstitial frequency-cap testi.
 - [ ] Pending billing testi.
 - [ ] Grace period testi.
@@ -282,16 +300,18 @@ Aşağıdakilerden biri eksikse V1 final değildir:
 4. Ham fincan fotoğrafları varsayılan olarak inference sonrası temizleniyor.
 5. Kullanıcı fal/chat/fotoğrafları varsayılan olarak eğitim verisine dönüşmüyor.
 6. Free offline kullanım Rewarded Ad gate'ini bypass edemiyor.
-7. Reward yalnız başarılı reward callback'inden sonra veriliyor.
-8. Premium Billing pending/grace/account-hold/expiry senaryoları test edilmiş.
-9. Model/prompt/runtime sürümü ve SHA'ları release ile kayıtlı.
-10. Model download öncesi cihaz ve disk uygunluğu kontrol ediliyor.
-11. Play model dağıtım yöntemi production release tarihinde yeniden doğrulanmış.
-12. Kullanıcı tarafından başlatılan in-app AI report akışı çalışıyor.
-13. Android backup ile hassas yerel veriler izinsiz buluta gitmiyor.
-14. Production loglarında fotoğraf/prompt/chat sızıntısı yok.
-15. Tarot 78 kart mapping integrity testi geçiyor.
-16. TalkBack/font scaling temel erişilebilirlik testi geçiyor.
-17. V1 Türkçe kapsamı korunuyor; plansız çok-dil veya yeni özellik eklenmiyor.
+7. **Her ücretsiz reward unlock için 2 Rewarded Ad gerekiyor; tek reklam reward vermiyor.**
+8. İki reklam da ayrı ayrı kullanıcı tarafından başlatılıyor ve UI `0/2 → 1/2 → 2/2` ilerlemesini açık gösteriyor.
+9. Reward yalnız ikinci reklam dahil gerekli iki başarılı `reward earned` callback'inden sonra veriliyor.
+10. Premium Billing pending/grace/account-hold/expiry senaryoları test edilmiş.
+11. Model/prompt/runtime sürümü ve SHA'ları release ile kayıtlı.
+12. Model download öncesi cihaz ve disk uygunluğu kontrol ediliyor.
+13. Play model dağıtım yöntemi production release tarihinde yeniden doğrulanmış.
+14. Kullanıcı tarafından başlatılan in-app AI report akışı çalışıyor.
+15. Android backup ile hassas yerel veriler izinsiz buluta gitmiyor.
+16. Production loglarında fotoğraf/prompt/chat sızıntısı yok.
+17. Tarot 78 kart mapping integrity testi geçiyor.
+18. TalkBack/font scaling temel erişilebilirlik testi geçiyor.
+19. V1 Türkçe kapsamı korunuyor; plansız çok-dil veya yeni özellik eklenmiyor.
 
 **Bu dosya `TODO.md` Faz 18 final kontrolünün zorunlu girdisidir.**
