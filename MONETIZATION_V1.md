@@ -21,15 +21,16 @@ Premium aktifse reklam sistemi tamamen kapalıdır:
 - Reklam request'i mümkün olduğunca oluşturulmaz.
 - Yüklenmiş reklam nesneleri dispose edilir.
 - Boş reklam container'ı bırakılmaz.
-- Kahve, Tarot, El Falı ve fal sohbeti reklam beklemeden kullanılır.
+- Kahve, Tarot, Rüya Tabiri, El Falı ve bunlara bağlı sohbetler reklam beklemeden kullanılır.
 
 ## 2. Rewarded unlock — Free kullanıcı
 
 Ücretsiz kullanıcı:
 - Kahve falı tam sonucu: **2 Rewarded Ad**.
 - Tarot tam yorumu: **2 Rewarded Ad**.
+- Rüya Tabiri tam yorumu: **2 Rewarded Ad**.
 - El Falı tam yorumu: **2 Rewarded Ad**.
-- Fal sohbetinde yeni mesaj paketi: **2 Rewarded Ad**.
+- Fal/rüya sohbetinde yeni mesaj paketi: **2 Rewarded Ad**.
 
 Kurallar:
 - `0/2 → 1/2 → 2/2` ilerlemesi gösterilir.
@@ -38,7 +39,7 @@ Kurallar:
 - Tek reklam reward vermez.
 - Reward yalnız iki başarılı `reward earned` callback'inden sonra açılır.
 - İlk reklamdan sonra ikinci reklam geçici olarak yüklenemezse aynı transaction içindeki `1/2` state'i güvenli biçimde korunur.
-- Reward transaction başka fal/açılım/chat paketine taşınamaz.
+- Reward transaction başka fal/rüya/açılım/chat paketine taşınamaz.
 - Reklam failure ücretsiz entitlement üretmez.
 
 ## 3. Süreye dayalı interstitial — 90 saniye
@@ -58,8 +59,9 @@ V1 sabiti:
 Timed interstitial şu anlarda gösterilmez:
 - kahve fotoğrafı seçme/çekme,
 - el fotoğrafı seçme/çekme,
+- rüya metni yazma/düzenleme/gönderme,
 - Qwen analiz/inference,
-- fal sonucunu aktif okuma,
+- fal/rüya sonucunu aktif okuma,
 - tarot kart seçme/çevirme,
 - el görüntü kalite/analiz akışı,
 - chat mesaj yazma veya AI cevap üretme,
@@ -84,8 +86,10 @@ Timed interstitial şu anlarda gösterilmez:
 ### Banner gösterilmeyecek ekranlar
 - Kahve fotoğrafı çekme/seçme.
 - El fotoğrafı çekme/seçme.
+- Rüya giriş/yazma ekranı.
 - Qwen analiz/loading.
-- Fal chatbot ekranı.
+- Fal/Rüya chatbot ekranı.
+- Fal/Rüya sonuç ekranı.
 - Tarot kart seçme/çevirme.
 - El analiz/sonuç üretim state'i.
 - Rewarded akışı.
@@ -95,15 +99,16 @@ Timed interstitial şu anlarda gösterilmez:
 ### Banner kalite kuralları
 - CTA, bottom navigation, chat input, galeriler ve diğer etkileşimli öğelerden güvenli mesafede.
 - Banner hiçbir butonun parçası gibi görünmez.
-- Fal metninin içine veya sohbet mesajları arasına yerleştirilmez.
+- Fal/rüya metninin içine veya sohbet mesajları arasına yerleştirilmez.
 - Premium aktifse banner container tamamen kaldırılır.
+- Kullanıcının fal/rüya içeriğinden hassas reklam profili türetilmez.
 
 ## 5. App Open
 
 - Timed interstitial'dan ayrı mekanizma.
 - İlk açılışlarda agresif kullanılmaz.
 - Rewarded/timed interstitial ile çakışmaz.
-- Kullanıcı kritik capture/analysis/billing akışına dönüyorsa gösterilmez.
+- Kullanıcı kritik capture/dream-entry/analysis/billing akışına dönüyorsa gösterilmez.
 - Premium'da kapalıdır.
 
 ## 6. Google Play satın alma / restore
@@ -145,10 +150,20 @@ kullanılmaz.
 
 Doğru ad: **Premium / LP FAL Premium**.
 
-## 9. Release QA
+## 9. Compliance bağlantısı
 
-- [ ] Kahve/Tarot/El/chat unlock için 2 Rewarded gerekiyor.
+Reklam ve satın alma UI'ı `COMPLIANCE_BY_DESIGN.md` kurallarına da tabidir:
+- dark pattern yok,
+- sistem uyarısını taklit eden reklam yok,
+- yanlış tıklama teşvik eden yerleşim yok,
+- fal/rüya AI içeriği reklam hedefleme segmentine dönüşmez,
+- store listing ile gerçek Premium/reklam davranışı çelişmez.
+
+## 10. Release QA
+
+- [ ] Kahve/Tarot/Rüya/El/chat unlock için 2 Rewarded gerekiyor.
 - [ ] Tek rewarded unlock vermiyor.
+- [ ] Rüya yazma/analiz/sonuç/chat sırasında timed interstitial yok.
 - [ ] 90 saniyeden önce timed interstitial uygunluğu oluşmuyor.
 - [ ] 90 saniye dolunca reklam anında zorla açılmıyor.
 - [ ] Timed interstitial yalnız doğal geçişte gösteriliyor.
@@ -156,12 +171,13 @@ Doğru ad: **Premium / LP FAL Premium**.
 - [ ] Rewarded transaction ile timed interstitial çakışmıyor.
 - [ ] Phone banner interaktif öğelerden güvenli mesafede.
 - [ ] Tablet/BlueStacks side banner ana içeriği bozmuyor.
-- [ ] Chat/analysis/capture ekranlarında banner yok.
+- [ ] Dream/chat/analysis/capture/result ekranlarında banner yok.
 - [ ] Premium aktifken hiçbir reklam türü ve boş reklam container'ı görünmüyor.
 - [ ] Premium aktifken yeni ad request yok.
 - [ ] Test build'lerinde yalnız AdMob test ID'leri kullanılıyor.
 - [ ] Premium tek seferlik satın alım olarak çalışıyor; subscription ürünü yok.
 - [ ] Reinstall/new-device/manual restore başarılı.
 - [ ] Premium UI metninde `PRO/Pro` yok.
+- [ ] Reklam sistemi `COMPLIANCE_BY_DESIGN.md` dark-pattern ve sensitive-content kurallarını geçiyor.
 
 **Bu dosya V1 final kontrolünün zorunlu girdisidir.**
