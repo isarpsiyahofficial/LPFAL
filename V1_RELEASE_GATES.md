@@ -1,7 +1,9 @@
 # LP FAL — V1 Ek Release Gates
 
 **Durum:** ZORUNLU / normatif  
-**Bağlı dosyalar:** `SPECIFICATION.md`, `TODO.md`, `MONETIZATION_V1.md`, `BILLING_RESTORE_SPEC.md`
+**Bağlı dosyalar:** `SPECIFICATION.md`, `TODO.md`, `MONETIZATION_V1.md`, `BILLING_RESTORE_SPEC.md`, `PRODUCT_MODEL_V1.md`, `FUNCTIONAL_UI_GATES.md`
+
+Premium ürün modeli ve kullanıcıya görünen isim standardında `PRODUCT_MODEL_V1.md` ana kaynaktır.
 
 Bu dosyadaki maddeler V1 final kontrolünün zorunlu parçasıdır.
 
@@ -34,7 +36,6 @@ Kahve, Tarot, El ve Fal Sohbeti için:
 Sonuç dili sembolik ve koşullu olmalıdır: `çağrıştırabilir`, `geleneksel yorumlarda`, `sembolik olarak`.
 
 Her fal sonucu görünür entertainment/professional-advice disclaimer içerir.
-
 Safety yalnız system prompt'a bırakılmaz; uygulama seviyesinde output kontrolü bulunur.
 
 ---
@@ -116,9 +117,7 @@ Her release kaydı:
 - generation parametreleri.
 
 Model veya prompt değişince regresyon tekrar çalışır.
-
 AI inference için fotoğraf/prompt/chat sunucuya gönderilmez. Cloudflare/harici inference yok.
-
 Debug model Play olmadan local kurulabilir. Release model base APK içine gömülmez; release tarihindeki Play on-device/asset delivery yöntemi yeniden doğrulanır.
 
 ---
@@ -141,13 +140,12 @@ Debug model Play olmadan local kurulabilir. Release model base APK içine gömü
 - Ad failure ücretsiz entitlement üretmez.
 
 ### Timed interstitial
-V1 sabiti:
-`timedInterstitialEligibilitySeconds = 90`
+V1 sabiti: `timedInterstitialEligibilitySeconds = 90`
 
 - Yalnız foreground aktif kullanım sayılır.
 - 90 sn dolması sadece eligibility oluşturur.
 - Reklam ancak sonraki güvenli/doğal geçişte gösterilir.
-- Fotoğraf capture/select, Qwen inference, fal sonucu aktif okuma, tarot selection, el capture/analysis, chat typing/generation, rewarded, billing/restore/consent sırasında gösterilmez.
+- Fotoğraf capture/select, Qwen inference, fal sonucu aktif okuma, tarot selection, el capture/analysis, chat typing/generation, rewarded, billing/consent sırasında gösterilmez.
 
 ### Banner
 - Telefon: tek anchored adaptive banner, yalnız güvenli ekranlarda.
@@ -157,69 +155,62 @@ V1 sabiti:
 
 ### Premium
 Premium aktifken Rewarded, timed interstitial, App Open, banner/native dahil **bütün reklam sistemi kapalıdır**.
-- Yüklü reklam objeleri dispose edilir.
-- Yeni reklam request'i gönderilmez.
-- Reklam container/boş alanı kalmaz.
 
 ---
 
-## 9. Billing / Google Play restore gate'i
+## 9. Premium satın alma / restore gate'i
 
-`BILLING_RESTORE_SPEC.md` bu bölümün detaylı normatif kaynağıdır.
+Tek ürün: **LP FAL Premium**.
 
-Tek ürün: **aylık otomatik yenilenen reklamsız Premium**. Lifetime/non-consumable Premium V1 kapsamında değildir.
-
-MIZANGLOBAL yalnız read-only mimari referanstır. LP FAL'e taşınacak desen:
-`purchaseStream → Google Play owned-entitlement sync/restore → doğrulanmış local snapshot → merkezi ad suppression`.
-
-Zorunlu mimari:
-- purchase listener satın alma/restore akışından önce hazır,
-- purchase ve restore tek validation hattında,
-- local Premium boolean tek başına source of truth değil,
-- Play purchase token/verification data olmadan ücretli Premium yok,
-- startup/app-resume/reconnect silent sync,
-- manuel `Satın Alımları Geri Yükle`,
-- duplicate callback idempotent,
-- process-death recovery,
-- Store fiyatı/para birimi Play metadata'sından,
-- `Aboneliği Yönet` Google Play yönetim akışına bağlı.
-
-State matrisi:
-- active / renewed → Premium açık,
-- pending initial purchase → Premium kapalı,
-- grace period → Premium açık,
-- cancelled fakat paid-through-end → dönem bitene kadar Premium açık,
-- account hold → Premium kapalı,
-- expired → Premium kapalı,
-- revoked/refunded ve entitlement yok → Premium kapalı.
+- Tek seferlik Google Play satın alımıdır.
+- Subscription/aylık/yıllık/otomatik yenileme yoktur.
+- Kullanıcıya `Ömür Boyu` veya `Lifetime` plan adı gösterilmez.
+- Açıklama: `Tek seferlik satın alım · Abonelik değildir.`
+- Fiyat Google Play metadata'sından gelir; hard-code değildir.
 
 Test zorunlu:
-- [ ] Yeni aylık purchase.
-- [ ] Pending purchase.
-- [ ] User cancel/error flow.
-- [ ] Clean install + aynı Play hesabında aktif abonelik → otomatik restore.
-- [ ] Reinstall/app-data-clear sonrası restore.
-- [ ] Manuel restore.
-- [ ] Zaten aktif Premium'da restore idempotent.
-- [ ] App resume silent sync.
-- [ ] Offline → online reconnect silent sync.
-- [ ] Renewal.
-- [ ] Grace period.
-- [ ] Cancelled-but-paid-through-end.
-- [ ] Account hold.
-- [ ] Expiry.
-- [ ] Revoke/refund entitlement removal.
-- [ ] Process death purchase sırasında ve sonraki recovery.
-- [ ] Duplicate purchase-stream callback.
-- [ ] Invalid/empty verification data Premium üretmiyor.
-- [ ] Subscription management link.
-- [ ] Store fiyatı hard-code değil.
-- [ ] Premium aktifleşince bütün yüklü reklamlar dispose.
-- [ ] Premium aktifken sıfır ad request/container.
+- purchase success,
+- pending,
+- cancel flow,
+- purchase error,
+- owned-purchase query/restore,
+- clean install restore,
+- new-device restore,
+- app resume sync,
+- internet-return sync,
+- process-death recovery,
+- duplicate callback/idempotency,
+- invalid/empty purchase proof,
+- wrong product ID,
+- acknowledgement/complete path,
+- manual `Satın Alımı Geri Yükle`.
+
+Premium aktif olduğunda ad request/container dahil tüm reklam yüzeyi sıfır olmalıdır.
 
 ---
 
-## 10. AI report / mağaza / privacy gate'i
+## 10. Premium isim standardı gate'i
+
+Kullanıcıya görünen Premium özelliğinde yalnız:
+- `Premium`
+- `LP FAL Premium`
+kullanılır.
+
+Release'i bloklayan legacy copy:
+- `PRO`
+- `Pro`
+- `LP FAL PRO`
+- `Ömür Boyu Premium`
+- `Lifetime Premium`
+- `Aylık Premium`
+
+`Lefferion Prime` marka adı bu kontrolden muaftır.
+
+`design_refs/ui/` içindeki eski JPG'lerde legacy copy varsa runtime copy kaynağı olamaz; yeni/yenilenen görsel referansta yalnız `Premium` kullanılmalıdır.
+
+---
+
+## 11. AI report / mağaza / privacy gate'i
 
 - Uygulama içi AI output report/flag akışı.
 - Kullanıcı başlatmadan report verisi gönderilmez.
@@ -230,11 +221,10 @@ Test zorunlu:
 - Üçüncü taraf asset lisansları.
 - AdMob UMP gereken bölgelerde request öncesi.
 - Development yalnız test reklam ID'leri.
-- Release build'de doğrulanmış production AdMob ID'leri; test ID sızıntısı yok.
 
 ---
 
-## 11. Ek QA matrisi
+## 12. Ek QA matrisi
 
 - [ ] Kahve multi-view fusion.
 - [ ] Kahve confidence calibration.
@@ -252,9 +242,9 @@ Test zorunlu:
 - [ ] Telefon banner güvenli spacing.
 - [ ] Tablet/BlueStacks side banner layout.
 - [ ] Premium'da sıfır ad request/container.
-- [ ] Billing clean-install restore.
-- [ ] Billing pending/grace/account-hold/expiry.
-- [ ] Billing process-death/reconnect recovery.
+- [ ] Tek seferlik Premium purchase + reinstall/new-device restore.
+- [ ] Subscription ürünü yok.
+- [ ] Premium UI copy'de `PRO/Pro` yok.
 - [ ] Network isolation Kahve + El + Chat.
 - [ ] Production sensitive logs kapalı.
 - [ ] TalkBack/font scaling.
@@ -274,11 +264,13 @@ Aşağıdakilerden biri eksikse final yok:
 7. Her free reward unlock 2 Rewarded.
 8. Timed interstitial 90 sn eligibility + doğal geçiş.
 9. Banner güvenli yerleşim.
-10. Premium tamamen reklamsız ve entitlement Google Play restore/sync ile doğrulanıyor.
-11. Clean install/reinstall/process-death restore testleri başarılı.
-12. Fotoğraflar varsayılan geçici ve eğitim verisi değil.
-13. Privacy/Data Safety/AI report/lisans tamam.
-14. 4/6/8 GB + tablet/BlueStacks QA.
-15. Signed APK/AAB clean test başarılı.
+10. Premium tamamen reklamsız.
+11. Premium tek seferlik Google Play satın alımı; abonelik yok.
+12. Restore clean-install/new-device/process-death testli.
+13. Premium kullanıcı metinlerinde `PRO/Pro/Ömür Boyu/Lifetime` yok.
+14. Fotoğraflar varsayılan geçici ve eğitim verisi değil.
+15. Privacy/Data Safety/AI report/lisans tamam.
+16. 4/6/8 GB + tablet/BlueStacks QA.
+17. Signed APK/AAB clean test başarılı.
 
 **Bu dosya `TODO.md` final fazının zorunlu girdisidir.**
