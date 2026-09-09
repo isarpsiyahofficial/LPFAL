@@ -4,24 +4,25 @@
 **Platform:** Android (APK test / AAB Google Play)  
 **Ürün adı:** **LP FAL**  
 **Durum:** V1 kapsamı kilitli  
-**Normatif ekler:** `PRODUCT_MODEL_V1.md`, `V1_RELEASE_GATES.md`, `MONETIZATION_V1.md`, `BILLING_RESTORE_SPEC.md`, `FUNCTIONAL_UI_GATES.md`
+**Normatif ekler:** `PRODUCT_MODEL_V1.md`, `DREAM_INTERPRETATION_SPEC.md`, `COMPLIANCE_BY_DESIGN.md`, `TODO_DREAM_COMPLIANCE.md`, `V1_RELEASE_GATES.md`, `MONETIZATION_V1.md`, `BILLING_RESTORE_SPEC.md`, `FUNCTIONAL_UI_GATES.md`
 
-> Premium ürün tipi ve kullanıcıya görünen Premium/PRO adlandırması konusunda `PRODUCT_MODEL_V1.md` ana kaynaktır.
+> Premium ürün tipi ve kullanıcıya görünen Premium/PRO adlandırması konusunda `PRODUCT_MODEL_V1.md` ana kaynaktır. Rüya Tabiri için `DREAM_INTERPRETATION_SPEC.md`; uygulama genelinde hukuka/politikalara uygunluk için `COMPLIANCE_BY_DESIGN.md` ana normatif kaynaklardır.
 
 ---
 
 ## 1. Ürün hedefi
 
-LP FAL; **Kahve Falı, Tarot Falı ve El Falı** sunan, yorum ve fala bağlı sohbeti mümkün olduğunca cihaz üzerinde çalışan yerel Qwen modeliyle üreten, reklam destekli ve tek seferlik **LP FAL Premium** satın alımı bulunan Android uygulamasıdır.
+LP FAL; **Kahve Falı, Tarot Falı, Rüya Tabiri ve El Falı** sunan, yorum ve aktif fal/rüyaya bağlı sohbeti mümkün olduğunca cihaz üzerinde çalışan yerel Qwen modeliyle üreten, reklam destekli ve tek seferlik **LP FAL Premium** satın alımı bulunan Android uygulamasıdır.
 
 Ana hedefler:
 - Hızlı, stabil ve sade kullanım.
-- AI yalnız fal analizi/yorumu ve aktif fala bağlı sohbet için kullanılır.
-- Fotoğraf, prompt ve sohbet AI inference amacıyla sunucuya gönderilmez.
+- AI yalnız fal/rüya analizi, sembolik yorum ve aktif fala/rüyaya bağlı sohbet için kullanılır.
+- Fotoğraf, rüya metni, prompt ve sohbet AI inference amacıyla sunucuya gönderilmez.
 - Free sürüm güçlü fakat politika uyumlu reklam modeli kullanır.
 - Premium tamamen reklamsızdır.
 - Premium abonelik değildir; tek seferlik Google Play satın alımıdır.
 - Kesin gelecek iddiası, teşhis veya hayat kararı yönlendiren tavsiye üretilmez.
+- Uygulamanın tamamı `COMPLIANCE_BY_DESIGN.md` gate'lerine tabidir.
 - V1 tamamlanana kadar kapsam yeniden büyütülmez.
 
 ---
@@ -32,18 +33,18 @@ V1 ana modülleri:
 1. Dashboard.
 2. Kahve Falı.
 3. Tarot Falı.
-4. El Falı.
-5. Fal sonucu.
-6. Aktif fala bağlı fal sohbeti.
-7. Geçmiş Fallar.
-8. **LP FAL Premium — tek seferlik satın alma / restore.**
-9. Profil / temel ayarlar.
-10. AdMob reklam sistemi.
-11. Yerel Qwen AI motoru.
+4. **Rüya Tabiri.**
+5. El Falı.
+6. Fal/Rüya sonucu.
+7. Aktif fala/rüyaya bağlı sohbet.
+8. Geçmiş Fallar / Rüyalar.
+9. **LP FAL Premium — tek seferlik satın alma / restore.**
+10. Profil / temel ayarlar.
+11. AdMob reklam sistemi.
+12. Yerel Qwen AI motoru.
 
 V1'e eklenmeyecekler:
 - Burç / astroloji.
-- Rüya tabiri.
 - Numeroloji.
 - Sosyal ağ / kullanıcılar arası mesajlaşma.
 - Coin/kredi sistemi.
@@ -97,6 +98,7 @@ Satın alma açıklaması:
 - Telefon/tablet/BlueStacks responsive.
 - `design_refs/ui/` JPG'leri yalnız görsel referanstır; runtime ekranı screenshot olarak kullanılmaz.
 - Eski mockup içinde `PRO/Pro` geçerse bu metin legacy/geçersizdir; runtime copy yalnız `Premium` olur.
+- Eski mockup içinde V1 dışı modüller görülmesi otomatik kapsam oluşturmaz; Rüya Tabiri ise artık gerçek V1 modülüdür.
 
 ### 4.1 Görsel asset politikası
 - Statik/dekoratif görseller repo içinde yerel asset olarak tutulur.
@@ -107,27 +109,38 @@ Satın alma açıklaması:
 
 ---
 
-## 5. Hukuki / güvenli yorumlama ilkesi
+## 5. Uygulama genelinde hukuki / güvenli yorumlama ilkesi
 
-LP FAL kendisini **eğlence ve kişisel yorum uygulaması** olarak konumlandırır. Fal çıktıları bilimsel gerçek, teşhis, hukuki görüş, yatırım görüşü veya kesin gelecek tahmini olarak sunulmaz.
+LP FAL kendisini **eğlence ve kişisel yorum uygulaması** olarak konumlandırır. Kahve, Tarot, Rüya Tabiri, El Falı ve bunlara bağlı chat çıktıları bilimsel gerçek, teşhis, hukuki görüş, yatırım görüşü, dini hüküm veya kesin gelecek tahmini olarak sunulmaz.
 
 AI kesin biçimde şunları söylemez:
 - ölüm/yaşam süresi,
 - ciddi hastalık/teşhis,
+- psikolojik/psikiyatrik tanı,
 - hamilelik/doğurganlık kesinliği,
 - hukuki sonuç garantisi,
 - garantili finansal/bahis sonucu,
+- dini otorite/fetva/ilahi kesinlik,
+- büyü/cin/lanet/nazar gibi doğaüstü iddiaları gerçek olgu olarak doğrulama,
 - önemli hayat kararını emreden yönlendirme.
 
 Tercih edilen dil:
-- `Geleneksel fal yorumlarında...`
+- `Geleneksel fal/rüya yorumlarında...`
 - `Sembolik olarak...`
 - `...çağrıştırabilir.`
+- `Bu kesin bir gelecek tahmini değildir.`
 
-Fal sonuçlarında görünür sabit bilgi:
-**“LP FAL yorumları eğlence ve kişisel yorum amaçlıdır; tıbbi, hukuki, finansal veya profesyonel tavsiye değildir.”**
+Ortak sonuç disclaimer'ı:
+**“Bu içerik eğlence ve kişisel yorum amaçlıdır; tıbbi, psikolojik, hukuki, finansal, dini veya diğer profesyonel danışmanlık yerine geçmez ve kesin gelecek tahmini değildir.”**
 
-Safety yalnız prompt'a bırakılmaz; uygulama-level output kontrolü de bulunur.
+Safety/compliance yalnız prompt'a bırakılmaz. Zorunlu katmanlar:
+1. prompt guard,
+2. structured grounding,
+3. application-level output compliance filter,
+4. high-risk response state,
+5. in-app AI report/flag.
+
+Ayrıntılar: `COMPLIANCE_BY_DESIGN.md`.
 
 ---
 
@@ -141,15 +154,18 @@ Safety yalnız prompt'a bırakılmaz; uygulama-level output kontrolü de bulunur
 Ana kartlar:
 1. Kahve Falı — `Falına Bak`.
 2. Tarot Falı — `Kartlarını Seç`.
-3. El Falı — `Avucunu Yorumla`.
+3. Rüya Tabiri — `Rüyanı Anlat` / `Rüyanı Yorumla`.
+4. El Falı — `Avucunu Yorumla`.
 
-Aktif/son fal varsa `Falına Devam Et / Sohbete Dön` kartı.
+Aktif/son fal veya rüya varsa `Yorumuna Devam Et / Sohbete Dön` kartı.
 
 Bottom navigation:
 - Ana Sayfa
 - Fallarım
 - Premium
 - Profil
+
+`Fallarım` görünümü rüya kayıtlarını da kapsar; UI adı son tasarım aşamasında `Geçmiş` gibi daha kapsayıcı bir adla değiştirilebilir.
 
 ---
 
@@ -166,6 +182,13 @@ Kahve + El Falı:
 - Ham fotoğraflar varsayılan inference sonrası silinir.
 - Training/fine-tune için kullanıcı verisi varsayılan kullanılmaz.
 - Auto Backup ile hassas raw/model/cache izinsiz buluta gitmez.
+
+Rüya Tabiri:
+- kamera/galeri izni gerektirmez,
+- rüya metni varsayılan cihaz içi işlenir,
+- ham rüya metni production log/analytics'e yazılmaz,
+- clipboard kullanıcı açıkça yapıştırmadan okunmaz,
+- gereksiz hassas profil alanı istenmez.
 
 ---
 
@@ -219,6 +242,47 @@ Qwen listede olmayan kart ekleyemez veya state değiştiremez.
 
 ---
 
+## 9D. Rüya Tabiri
+
+Rüya Tabiri genel amaçlı chatbot değil, kontrollü sembolik yorum modülüdür.
+
+### Girdi
+- gerçek multiline rüya metin alanı,
+- opsiyonel baskın duygu,
+- opsiyonel tekrar eden rüya bilgisi,
+- opsiyonel kısa bağlam.
+
+### Pipeline
+1. Input safety check.
+2. `dream_extract`: yalnız kullanıcının anlattığı sahne/sembol/duygu/rolleri structured çıkar.
+3. Kullanıcının söylemediği ayrıntıyı ekleme.
+4. Belirsiz öğeleri `uncertain` olarak tut.
+5. `dream_interpret`: yalnız structured dream verisinden sembolik yorum üret.
+6. Output compliance filter.
+7. Gerekirse safe rewrite/high-risk response.
+
+Sonuç bölümleri:
+- Rüyanın Kısa Özeti,
+- Öne Çıkan Semboller,
+- Duygusal Atmosfer,
+- Sembolik Temalar,
+- Genel Sembolik Yorum,
+- Belirsizlik / disclaimer.
+
+Rüya sonucunda `Tavsiye`, `Öneri`, `Ne Yapmalısın` veya karar yönlendiren bölüm bulunmaz.
+
+Kesin yasak:
+- sağlık/psikoloji teşhisi,
+- hamilelik/ölüm/gelecek kesinliği,
+- hukuki/finansal yönlendirme,
+- dini otorite/fetva/ilahi mesaj doğrulama,
+- büyü/cin/lanet/paranoya doğrulama,
+- üçüncü kişi hassas özellik çıkarımı.
+
+Ayrıntılar ve QA: `DREAM_INTERPRETATION_SPEC.md`.
+
+---
+
 ## 10. El Falı
 
 - 1–2 net avuç içi fotoğrafı.
@@ -242,14 +306,22 @@ Kesin yasak:
 
 ---
 
-## 11. Fal Sohbeti
+## 11. Fal / Rüya Sohbeti
 
-- Yalnız aktif Kahve/Tarot/El falı context'iyle konuşur.
+- Yalnız aktif Kahve/Tarot/Rüya/El context'iyle konuşur.
 - Genel amaçlı chatbot değildir.
-- Yeni fal yeni conversation context oluşturur.
+- Yeni fal/rüya yeni conversation context oluşturur.
 - Context büyürse yerel özetleme.
-- Kod/haber/ödev gibi fal dışı istekler scope rejection alır.
-- Chat çıktısı da safety filtresinden geçer.
+- Kod/haber/ödev gibi fal/rüya dışı istekler scope rejection alır.
+- Chat çıktısı global safety/compliance filtresinden geçer.
+- Kullanıcı `Ne yapmalıyım?` dese bile önemli hayat kararı için tavsiye/direktif verilmez.
+- Her AI chat mesajı uygulamadan çıkmadan report/flag edilebilir.
+
+Rüya chat context'i:
+- original dream text veya güvenli local summary,
+- structured dream extraction,
+- final symbolic interpretation,
+- bounded chat history.
 
 Free:
 - İlk takip sorusu ücretsiz.
@@ -266,15 +338,16 @@ Ana hedef: resmi Qwen3.5-0.8B ailesinin uygun mobil/quantized sürümü.
 
 - Resmi model/revision sabitlenir.
 - Kahve + El için gerçek cihazda multimodal destek doğrulanır.
+- Rüya + Tarot + chat metin pipeline'ları cihaz içi çalışır.
 - Q4 ilk aday; benchmark'a göre değişebilir.
 - Model/projector SHA-256 sürümlenir.
-- Prompt sürümleri: coffee, tarot, palm, chat, safety.
+- Prompt sürümleri: `coffee`, `tarot`, `dream_extract`, `dream_interpret`, `dream_chat`, `palm`, `chat`, `safety`, `compliance`.
 - Inference UI thread'i bloklamaz.
 
 AI inference için:
 - Cloudflare yok.
 - Harici inference API yok.
-- Fotoğraf/prompt/chat sunucuya gönderilmez.
+- Fotoğraf/rüya metni/prompt/chat sunucuya gönderilmez.
 
 Debug:
 - model PC'den ADB/local kurulabilir.
@@ -289,14 +362,20 @@ Release:
 ## 13. Yerel veri
 
 Cihazda tutulabilecekler:
-- fal türü,
+- içerik türü: coffee/tarot/dream/palm,
 - structured analysis,
-- final fal metni,
+- final fal/rüya metni,
 - tarot metadata,
+- rüya metni veya kullanıcı tercihiyle güvenli yerel özeti,
 - bağlı chat geçmişi,
 - Premium entitlement cache/fingerprint metadata.
 
 Ham fotoğraf varsayılan kalıcı saklanmaz.
+
+Rüya/chat serbest metinleri hassas bilgi içerebileceği için:
+- analytics/log'a yazılmaz,
+- reklam segmentine dönüştürülmez,
+- kullanıcı silme aksiyonu bağlı local kayıtları kapsar.
 
 ---
 
@@ -306,13 +385,17 @@ Ham fotoğraf varsayılan kalıcı saklanmaz.
 
 - Kahve full result = 2 Rewarded.
 - Tarot full result = 2 Rewarded.
+- **Rüya full result = 2 Rewarded.**
 - El full result = 2 Rewarded.
-- Gated chat pack = 2 Rewarded.
+- Gated fal/rüya chat pack = 2 Rewarded.
 - Timed interstitial eligibility = 90 saniye foreground aktif kullanım.
 - Reklam yalnız güvenli/doğal geçişte.
+- Rüya yazma/analiz/sonuç/chat sırasında timed interstitial yok.
+- Rüya giriş/sonuç/chat ekranında banner yok.
 - Phone: tek anchored adaptive banner güvenli ekranlarda.
 - Tablet/BlueStacks: gerekirse tek side rail.
 - App Open diğer full-screen akışlarla çakışmaz.
+- Fal/rüya içeriği hassas reklam hedefleme verisine dönüştürülmez.
 
 ---
 
@@ -342,7 +425,7 @@ Ham fotoğraf varsayılan kalıcı saklanmaz.
 - Yeni ad request yok.
 - Loaded ads dispose.
 - Empty ad container yok.
-- Kahve/Tarot/El/chat doğrudan kullanılır.
+- Kahve/Tarot/Rüya/El/chat doğrudan kullanılır.
 
 ---
 
@@ -355,11 +438,22 @@ Ham fotoğraf varsayılan kalıcı saklanmaz.
 
 AI inference network'e çıkmaz.
 
-Privacy Policy:
-- kalıcı HTTPS URL,
-- gerçek SDK davranışına uygun Data Safety,
-- raw fotoğraf default report payload'a eklenmez,
-- production log redaction.
+Privacy/KVKK tasarımı:
+- veri işleme amacı açık ve sınırlı,
+- veri minimizasyonu,
+- gerekli aydınlatma kullanıcıdan veri alındığı yerde sağlanır,
+- veri kategorisi/hukuki sebep/saklama/aktarımı release veri envanterinde eşleştirilir,
+- Privacy Policy kalıcı HTTPS URL,
+- gerçek SDK davranışına uygun Play Data Safety,
+- raw fotoğraf ve ham rüya/chat default report payload'a eklenmez,
+- production log redaction,
+- kullanıcı tarafından başlatılmayan report yok.
+
+Google Play AI-generated content için:
+- AI sonuçları/chat mesajları in-app report/flag edilebilir,
+- report kullanıcıyı uygulama dışına çıkarmak zorunda bırakmaz.
+
+Ayrıntı: `COMPLIANCE_BY_DESIGN.md`.
 
 ---
 
@@ -370,6 +464,7 @@ Privacy Policy:
 - Critical touch target tercihen >=48dp.
 - TalkBack semantic labels.
 - Font scaling overflow üretmez.
+- Rüya multiline input/report/disclaimer erişilebilir.
 - Premium banner kaldırıldığında boş alan bırakılmaz.
 
 ---
@@ -378,17 +473,26 @@ Privacy Policy:
 
 Final için zorunlu:
 - Kahve multi-view doğruluk QA.
-- El Falı görünür çizgi/negatif/bias QA.
 - Tarot 78 kart integrity.
+- **Rüya en az 100 Türkçe senaryo groundedness/safety QA.**
+- Rüyada kullanıcı tarafından yazılmayan öğe uydurmama testi.
+- Rüyada sağlık/psikoloji/hukuk/finans/din/gelecek tavsiye ve kesinlik regresyonu.
+- El Falı görünür çizgi/negatif/bias QA.
+- Dört ana modül + tüm chat'lerde application-level compliance filter.
+- In-app AI report/flag.
 - Qwen 4/6/8 GB gerçek cihaz performans testi.
 - Network isolation.
 - Sensitive production log yok.
-- Free 2-Rewarded akışları.
+- KVKK veri envanteri + aydınlatma/privacy eşleşmesi.
+- Play Data Safety gerçek SDK davranışıyla uyumlu.
+- Store listing/screenshot yanıltıcı vaat içermiyor.
+- Free 2-Rewarded akışları dört modülde.
 - 90 saniye timed eligibility.
 - Banner güvenli spacing.
 - Premium tek seferlik purchase + restore testleri.
 - Premium aktifken sıfır reklam request/container.
 - UI içinde Premium ürünü için `PRO/Pro/Ömür Boyu/Lifetime/Aylık Premium` yok.
+- `COMPLIANCE_BY_DESIGN.md` red-team ve release-tarihi politika kontrolü tamam.
 - APK/AAB clean install testi.
 
-**Çatışma halinde Premium ürün modeli ve isim standardında `PRODUCT_MODEL_V1.md` uygulanır.**
+**Çatışma halinde Premium ürün modeli/isim standardında `PRODUCT_MODEL_V1.md`, Rüya Tabiri konusunda `DREAM_INTERPRETATION_SPEC.md`, uygulama-geneli compliance konusunda `COMPLIANCE_BY_DESIGN.md` uygulanır.**
