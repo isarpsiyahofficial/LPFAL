@@ -5,7 +5,8 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 ## 1. V1 kapsamı korunacak
 - V1 gerçek modüller: Kahve Falı, Tarot Falı, El Falı, aktif fala bağlı AI sohbeti, geçmiş fallar, Premium, profil/ayarlar, reklamlar ve cihaz içi Qwen.
 - Mockup'larda görünen Rüya Tabiri, Günlük Yorum, Aşk Uyumu, Kariyer modülü vb. V1 kapsamına otomatik olarak girmez.
-- Çatışma halinde `SPECIFICATION.md`, `TODO.md`, `V1_RELEASE_GATES.md`, `MONETIZATION_V1.md` ve bu dosya birlikte uygulanır; UI işlevselliği konusunda bu dosya minimum kabul kapısıdır.
+- Premium ürün modeli ve kullanıcıya görünen adlandırmada `PRODUCT_MODEL_V1.md` ana kaynaktır.
+- Çatışma halinde `PRODUCT_MODEL_V1.md`, `SPECIFICATION.md`, `TODO.md`, `V1_RELEASE_GATES.md`, `MONETIZATION_V1.md` ve bu dosya birlikte uygulanır; Premium isimlendirmesinde `PRODUCT_MODEL_V1.md` önceliklidir.
 
 ## 2. Gerçek AI sohbeti — statik görsel yasak
 - Sohbet ekranı gerçek, kaydırılabilir mesaj listesi içerecek.
@@ -67,11 +68,16 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 - Kart pozisyonu, upright/reversed durumu ve kullanıcının sorusu Qwen'e structured metadata olarak verilir.
 - Qwen kart seçmez veya yeni kart uydurmaz; yalnız verilen kartları yorumlar.
 
-## 7. Navigasyon ve butonlar
+## 7. Navigasyon, Premium ve butonlar
 - Dashboard Kahve/Tarot/El kartları gerçek route/navigation butonlarıdır.
 - Bottom navigation gerçek sayfa/state navigasyonu yapar.
-- Pro butonu Google Play Billing ekranına/akışına bağlanır.
-- Geri, gönder, kamera, galeri, kart seç, analiz, retry ve abonelik yönetimi kontrollerinin tamamı gerçek callback/state'e bağlıdır.
+- Premium butonu Google Play tek seferlik satın alma ekranına/akışına bağlanır.
+- Kullanıcıya görünen plan adı yalnız `LP FAL Premium` / `Premium` olacaktır.
+- `PRO`, `Pro`, `Ömür Boyu Premium` ve `Lifetime Premium` kullanıcı metni olarak kullanılmaz.
+- Satın alma açıklaması: `Tek seferlik satın alım · Abonelik değildir.`
+- Satın alma CTA'sı: `Premium'a Geç` veya `Premium'u Aç`.
+- Restore CTA'sı: `Satın Alımı Geri Yükle`.
+- Geri, gönder, kamera, galeri, kart seç, analiz, retry ve restore kontrollerinin tamamı gerçek callback/state'e bağlıdır.
 - Görsel üstüne basılmış sahte UI metni/button kabul edilmez.
 
 ## 8. Responsive ve erişilebilirlik
@@ -90,7 +96,12 @@ Aşağıdakiler manuel/otomatik test edilmeden ilgili UI fazı tamamlanmış say
 - Tarot kartlarına dokunma selection state'ini değiştiriyor ve duplicate üretmiyor.
 - Chat input, send, Qwen generation, loading, retry/cancel ve persistence çalışıyor.
 - Free/Premium reklam kapıları doğru uygulanıyor.
+- Premium satın alma + otomatik restore + manuel restore çalışıyor.
+- Premium aktifken hiçbir reklam request/container/gösterimi yok.
+- Uygulama içi kullanıcı metinlerinde Premium özelliği için `PRO/Pro` bulunmuyor.
 - Hiçbir mockup runtime'da bütün ekranı kaplayan statik UI olarak kullanılmıyor.
 
 ## 10. Tasarım referansları
 `design_refs/ui/` altındaki JPG dosyaları bu ekranların görsel dilini, yerleşim fikrini, tipografi/ışık/kompozisyon yönünü anlatır. Uygulama bunları birebir screenshot olarak kullanmak yerine mevcut gerçek asset'ler + Flutter component'leriyle yeniden kurar.
+
+Eski JPG mockup içinde `PRO/Pro` yazısı görünüyorsa bu copy **legacy/geçersiz** kabul edilir; runtime'da ve yeni görsel referanslarda yalnız `Premium` kullanılacaktır.
