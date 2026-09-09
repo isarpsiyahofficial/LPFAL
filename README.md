@@ -4,12 +4,15 @@ Android üzerinde yerel Qwen tabanlı **Kahve Falı + Tarot Falı + El Falı** u
 
 ## V1 zorunlu dokümanları
 
-Geliştirme ve final kontrolünde aşağıdaki dört dosya **birlikte** takip edilir:
+Geliştirme ve final kontrolünde aşağıdaki dosyalar birlikte takip edilir:
 
 1. [`SPECIFICATION.md`](./SPECIFICATION.md) — ürün, AI, güvenlik ve teknik şartname.
 2. [`TODO.md`](./TODO.md) — bağımlılıklara göre sıralanmış faz bazlı yapılacaklar listesi.
 3. [`V1_RELEASE_GATES.md`](./V1_RELEASE_GATES.md) — bloklayıcı release şartları.
 4. [`MONETIZATION_V1.md`](./MONETIZATION_V1.md) — 2 Rewarded, 90 saniye timed interstitial, banner ve Premium reklam kuralları.
+5. [`BILLING_RESTORE_SPEC.md`](./BILLING_RESTORE_SPEC.md) — Google Play satın alma/restore davranışı.
+6. [`PRODUCT_MODEL_V1.md`](./PRODUCT_MODEL_V1.md) — **Premium ürün modeli ve isim standardında ana kaynak**.
+7. [`FUNCTIONAL_UI_GATES.md`](./FUNCTIONAL_UI_GATES.md) — mockup'ların gerçek Flutter UI'a dönüşüm kabul şartları.
 
 ## V1 kapsamı
 
@@ -20,7 +23,11 @@ Geliştirme ve final kontrolünde aşağıdaki dört dosya **birlikte** takip ed
 - Geçmiş Fallar
 - Yerel Qwen inference
 - AdMob monetizasyonu
-- Aylık tamamen reklamsız Premium
+- **LP FAL Premium: tek seferlik Google Play satın alımı, abonelik yok**
+
+Premium kullanıcı arayüzünde yalnız **Premium** adı kullanılır. `PRO/Pro`, `Ömür Boyu Premium` ve `Lifetime Premium` kullanıcıya görünen ürün adı olarak kullanılmaz.
+
+Satın alma ekranı açıklaması: **Tek seferlik satın alım · Abonelik değildir.**
 
 Fal çıktıları eğlence/kişisel yorum amaçlıdır. Kesin gelecek iddiası, sağlık/hukuk/finans teşhisi veya kullanıcıya önemli hayat kararı aldıran yönlendirici tavsiye V1 güvenlik kurallarına aykırıdır.
 
