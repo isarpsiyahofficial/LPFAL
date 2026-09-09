@@ -23,7 +23,7 @@ Bu dosyalar **yalnız tasarım referansıdır**. Runtime'da tam ekran screenshot
 
 ## 2. Uygulama içi görsel asset seti — `assets/ui/`
 
-Aşağıdaki **10 JPG** repo içinde mevcut:
+Aşağıdaki **11 JPG** repo içinde mevcut:
 
 | Dosya | Blob SHA | Boyut |
 |---|---|---:|
@@ -39,8 +39,6 @@ Aşağıdaki **10 JPG** repo içinde mevcut:
 | `assets/ui/splash/lpfal_splash.jpg` | `4e767f1e545e0c66fc6e21950d415e99baf35c46` | 10,894 B |
 | `assets/ui/states/ai_analysis.jpg` | `886a934e356d16a1bf728d9f892389a84e3b0687` | 6,378 B |
 
-> Not: Bu listede toplam **11** uygulama asset dosyası vardır; manifest tablo içeriği repo recursive tree sonucuna göre kaynak kabul edilir.
-
 ## 3. Toplam doğrulanan görseller
 
 - Tasarım referansı: **7**
@@ -53,13 +51,10 @@ Bu nedenle üretilmiş UI görsellerinin yalnız sohbet içinde kalmadığı, re
 
 Premium ürün/özellik adında tek kullanıcı kelimesi **Premium**'dur.
 
-Görsel veya UI içinde kullanılmayacak:
-- `PRO`
-- `Pro`
-- `LP FAL PRO`
-- `Ömür Boyu Premium`
-- `Lifetime Premium`
-- `Aylık Premium`
+Görsel veya UI içinde kullanılmayacak legacy etiketler:
+- üç harfli eski plan etiketi,
+- eski karma plan adları,
+- zaman/süre belirten plan adları.
 
 Kullanılacak:
 - `Premium`
@@ -70,11 +65,11 @@ Satın alma açıklaması:
 
 ## 5. JPG içi legacy metin politikası
 
-`design_refs/ui/*.jpg` dosyaları raster/JPG olduğundan içlerindeki yazı runtime copy kaynağı değildir. Eski görselde `PRO/Pro` görülürse:
+`design_refs/ui/*.jpg` dosyaları raster/JPG olduğundan içlerindeki yazı runtime copy kaynağı değildir. Eski görselde legacy plan etiketi görülürse:
 1. uygulama ekranında bu yazı kopyalanmaz,
 2. Flutter widget copy'si `Premium` olur,
 3. yeni/yenilenen mockup yalnız `Premium` kullanır,
-4. release QA'da uygulamanın gerçek ekran görüntüsü üzerinden `PRO/Pro` görsel taraması yapılır.
+4. release QA'da uygulamanın gerçek ekran görüntüsü üzerinden legacy Premium etiketi görsel taraması yapılır.
 
 Hiçbir eski mockup, ürün modelini veya isim standardını `PRODUCT_MODEL_V1.md` karşısında değiştiremez.
 
@@ -84,8 +79,8 @@ Hiçbir eski mockup, ürün modelini veya isim standardını `PRODUCT_MODEL_V1.m
 - [ ] Flutter `pubspec.yaml` yalnız gerçekten kullanılan runtime asset'leri içeriyor.
 - [ ] Missing asset yok.
 - [ ] License/source manifest tamam.
-- [ ] Runtime UI'da Premium için `PRO/Pro` yok.
-- [ ] Runtime UI'da `Ömür Boyu/Lifetime/Aylık Premium` yok.
+- [ ] Runtime UI'da Premium için eski plan etiketi yok.
+- [ ] Runtime UI'da süre/abonelik çağrıştıran plan adı yok.
 - [ ] Premium plan adı `LP FAL Premium`.
 - [ ] Tasarım JPG'leri tam ekran statik UI olarak kullanılmıyor.
 
