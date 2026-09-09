@@ -1,47 +1,47 @@
-# LP FAL — Google Play Billing / Restore Şartname Eki
+# LP FAL — Google Play Satın Alma / Restore Şartname Eki
 
 **Durum:** ZORUNLU / normatif  
-**Kapsam:** V1 aylık Premium abonelik, Google Play restore/senkronizasyonu ve Premium–reklam entegrasyonu  
-**Referans yaklaşım:** `isarpsiyahofficial/MIZANGLOBAL` monetizasyon mimarisi yalnız **okuma/referans** amacıyla incelenmiştir. MIZAN reposunun yapısı değiştirilmeyecek ve LP FAL için MIZAN'ın ürün kimlikleri veya lifetime mantığı kopyalanmayacaktır.
+**Kapsam:** V1 tek seferlik Premium satın alımı, Google Play restore/senkronizasyonu ve Premium–reklam entegrasyonu  
+**Ürün modeli ana kaynağı:** `PRODUCT_MODEL_V1.md`
 
 ---
 
-## 1. Ürün modeli — LP FAL için kilitli
+## 1. Ürün modeli — kilitli
 
-LP FAL V1'de tek ücretli ürün:
-- **Aylık otomatik yenilenen Premium abonelik**.
-- Premium'un zorunlu faydası: **uygulamadaki tüm reklamların kaldırılması**.
-- V1'de lifetime / non-consumable Premium yoktur.
-- V1'de birden fazla Premium katmanı yoktur.
-- Google Play Console'daki gerçek ürün/base-plan kimliği uygulama implementasyonu sırasında tek merkezden tanımlanır; UI içine magic string dağıtılmaz.
-- Fiyat, para birimi, faturalandırma dönemi ve Play tarafından sağlanan ürün metadatası mümkün olduğunca `ProductDetails`/Billing bilgisinden gösterilir; `₺49,99` gibi sabit fiyat kodlanmaz.
+LP FAL V1'de tek ücretli ürün **LP FAL Premium**'dur.
 
-`design_refs` altındaki bir mockup'ta lifetime veya ek Premium özellikleri görünmesi ürün kapsamını değiştirmez; mockup yalnız görsel referanstır.
-
----
-
-## 2. MIZAN'dan alınacak mimari davranış
-
-MIZAN'da çalışan yaklaşım LP FAL'e şu prensiplerle uyarlanır:
-
-1. Satın alma servisi uygulama yaşam döngüsünden ayrılmış merkezi bir servis olur.
-2. `purchaseStream` dinleyicisi satın alma/restore sonuçlarını tek yerde işler.
-3. Google Play store erişilebilirliği ve ürün metadatası merkezi olarak yüklenir.
-4. Uygulama açılışında mevcut satın alma hakkı sessizce senkronize edilir.
-5. Uygulama foreground'a döndüğünde Premium hakkı yeniden kontrol edilir.
-6. İnternet yeniden geldiğinde mevcut Play hakkı yeniden senkronize edilir.
-7. Purchase ve restore aynı entitlement doğrulama hattından geçer.
-8. Yerel Premium cache'i yalnız son bilinen UX state'idir; tek başına ücretli Premium üretmez.
-9. Premium state değişince reklam servisi merkezi olarak yeniden değerlendirilir.
-10. Premium aktif olduğunda yüklenmiş reklam nesneleri de dispose edilir; yeni reklam request'i oluşturulmaz.
-
-MIZAN'daki `premium_lifetime`, local promotion, günlük rewarded-Premium süresi ve MIZAN'a özel reklam sayıları LP FAL'e kopyalanmaz.
+- Aylık/yıllık/otomatik yenilenen abonelik yoktur.
+- Google Play üzerinden tek seferlik kalıcı Premium satın alımı vardır.
+- Kullanıcıya görünen paket adı `Ömür Boyu`, `Lifetime`, `Permanent` veya `PRO` olmayacaktır.
+- Ekranda plan adı yalnız **LP FAL Premium** / **Premium** olarak gösterilir.
+- Açıklama: **Tek seferlik satın alım · Abonelik değildir.**
+- Fiyat ve para birimi Google Play ürün bilgisinden gösterilir; hard-code edilmez.
+- Google Play Console ürün kimliği tek merkezi config'te tutulur; UI içine magic string dağılmaz.
 
 ---
 
-## 3. Satın alma servisi
+## 2. MIZAN'dan referans alınan mimari davranış
 
-Önerilen katmanlar:
+MIZAN reposu yalnız okuma/referans amacıyla incelenmiştir; yapısı değiştirilmez.
+
+LP FAL'e taşınacak prensipler:
+1. Satın alma servisi merkezi ve UI'dan ayrıdır.
+2. `purchaseStream` satın alma/restore sonuçlarını tek yerde işler.
+3. Store availability ve product details merkezi yüklenir.
+4. Uygulama açılışında mevcut owned purchase sessizce senkronize edilir.
+5. App resume ve internet geri gelişi sırasında entitlement yeniden kontrol edilir.
+6. Purchase ve restore aynı doğrulama hattından geçer.
+7. Yerel Premium cache'i yalnız son bilinen UX state'idir; tek başına ücretli Premium üretmez.
+8. Premium state değişince reklam servisi merkezi yeniden değerlendirilir.
+9. Premium aktif olduğunda yüklenmiş reklamlar dispose edilir ve yeni reklam request'i yapılmaz.
+10. Aynı satın alma tekrar geldiğinde idempotent davranılır.
+
+MIZAN'a özel lifetime ürün adı, promosyon mantığı, günlük geçici Premium ve MIZAN reklam sayıları LP FAL'e kopyalanmaz.
+
+---
+
+## 3. Önerilen katmanlar
+
 - `PurchaseService`
 - `PremiumEntitlementStore`
 - `MonetizationController`
@@ -49,11 +49,11 @@ MIZAN'daki `premium_lifetime`, local promotion, günlük rewarded-Premium süres
 - `AdPolicy / MonetizationConfig`
 
 ### Başlatma sırası
-1. Uygulamanın gerekli hukuki/onay ekranları tamamlanır.
+1. Gerekli hukuki/onay ekranları tamamlanır.
 2. `purchaseStream` listener bağlanır.
 3. Google Play Billing kullanılabilirliği kontrol edilir.
-4. Aylık Premium ürün metadatası yüklenir.
-5. Mevcut satın alımlar/abonelik hakkı sessizce senkronize edilir.
+4. LP FAL Premium ürün metadatası yüklenir.
+5. Mevcut owned purchases sessizce senkronize edilir.
 6. Entitlement snapshot güncellenir.
 7. Premium ise reklam sistemi suppress edilir; Free ise consent sonrası reklam servisi hazırlanabilir.
 
@@ -61,188 +61,153 @@ Aynı initialization/sync işleminin paralel iki kez çalışması engellenir. R
 
 ---
 
-## 4. Google Play restore / entitlement source of truth
+## 4. Satın alma akışı
+
+1. Kullanıcı Premium ekranını açar.
+2. Google Play'den gerçek ürün fiyatı/para birimi yüklenir.
+3. Kullanıcı `Premium'a Geç` / `Premium'u Aç` butonuna basar.
+4. Google Play satın alma akışı başlar.
+5. Pending durum Premium vermez.
+6. Purchased/restored state geldiğinde purchase proof doğrulanır.
+7. Doğrulama başarılıysa Premium entitlement yazılır.
+8. Gerekliyse satın alma acknowledgement/complete işlemi tamamlanır.
+9. Premium state değişir değişmez bütün reklam sistemi suppress edilir.
+10. UI `Premium Aktif` state'ine geçer.
+
+Başarısız/cancelled satın alma ücretsiz entitlement üretmez.
+
+---
+
+## 5. Google Play restore / entitlement source of truth
 
 ### Otomatik restore
 Kullanıcı normal şartlarda ayrıca restore butonuna basmak zorunda kalmamalıdır. Aşağıdaki anlarda sessiz senkronizasyon yapılır:
 - clean install / ilk uygun açılış,
-- uygulama açılışı,
+- normal uygulama açılışı,
 - app resume,
 - internet bağlantısının geri gelmesi,
 - satın alma callback'i sonrası,
 - process death sonrası sonraki açılış/resume.
 
-Android'de mevcut/owned Play satın alımları güncel desteklenen Billing API / Flutter `in_app_purchase` Android katmanı üzerinden sorgulanır. Restore edilen satın alma bilgileri de aynı `purchaseStream`/validation hattında işlenir.
+Android'de owned Play satın alımı güncel desteklenen Billing API / Flutter `in_app_purchase` Android katmanı üzerinden sorgulanır. Restore edilen satın alma bilgileri aynı validation hattında işlenir.
 
 ### Manuel restore
-Premium veya Ayarlar ekranında kullanıcı desteği için:
-- **`Satın Alımları Geri Yükle`** aksiyonu bulunur.
-- Buton otomatik senkronizasyonun alternatifi değil, kullanıcı tarafından tetiklenen ek recovery yoludur.
-- Zaten Premium olan kullanıcıda tekrar entitlement üretmez; işlem idempotenttir.
+Premium veya Ayarlar ekranında:
+- **`Satın Alımı Geri Yükle`** aksiyonu bulunur.
+- Bu buton otomatik senkronizasyonun alternatifi değil, ek recovery yoludur.
 
-### Aynı Google hesabı / yeni cihaz
-Aynı Google Play hesabında aktif aylık aboneliği olan kullanıcı uygulamayı başka desteklenen Android cihaza kurduğunda store senkronizasyonu Premium'u yeniden tanımalıdır.
-
----
-
-## 5. Entitlement güven kuralları
-
-- `isPremium=true` şeklinde tek başına değiştirilebilir yerel boolean **source of truth değildir**.
-- Ücretli Premium için Play tarafından dönen satın alma/abonelik kanıtı ve güncel owned-entitlement senkronizasyonu gerekir.
-- Purchase token / verification data boşsa ücretli Premium verilmez.
-- Aynı purchase token için tekrarlanan callback entitlement'ı iki kez üretmez.
-- İstenirse MIZAN'daki yaklaşıma benzer şekilde product ID + purchase token materyalinden SHA-256 fingerprint tutularak yerel state'in bütünlük bağı güçlendirilir.
-- Fingerprint yalnız cache/bütünlük sinyalidir; Google Play state'inin yerine geçmez.
-- Purchase error veya user cancel Premium vermez.
-- Initial purchase `pending` durumundayken ödeme tamamlanmadan Premium açılmaz.
-- `pendingCompletePurchase`/acknowledgement gereken satın alımlar desteklenen Billing akışına göre tamamlanır.
-- Tam backend doğrulaması bulunmayan V1'de mutlak anti-tamper iddiası yapılmaz; online durumda Google Play store state'i otoritedir.
+### Clean install / yeni cihaz
+Aynı Google Play hesabında ürün hâlâ owned ise:
+- tekrar ödeme istenmez,
+- sessiz sync veya manuel restore Premium'u geri getirir.
 
 ---
 
-## 6. Aylık abonelik yaşam döngüsü
+## 6. Entitlement güveni
 
-Uygulama state matrisi:
-
-| Google Play durumu | LP FAL Premium | Reklamlar |
-| --- | --- | --- |
-| İlk satın alma pending | Kapalı | Free kuralları |
-| Satın alma aktif | Açık | Tamamen kapalı |
-| Normal yenileme aktif | Açık | Tamamen kapalı |
-| Grace period | Açık | Tamamen kapalı |
-| Kullanıcı iptal etti fakat paid-through-end devam ediyor | Bitiş tarihine kadar açık | Bitiş tarihine kadar kapalı |
-| Account hold | Kapalı | Free kuralları geri döner |
-| Expired | Kapalı | Free kuralları geri döner |
-| Revoked / refunded ve artık entitled değil | Kapalı | Free kuralları geri döner |
-
-Uygulama kendi başına `grace` veya `hold` uydurmaz; güncel Play entitlement davranışını esas alır.
+- Yerel `isPremium=true` flag'i tek başına güvenilir ücretli hak değildir.
+- Google Play kaynaklı valid purchase proof/token bulunmadan ücretli Premium oluşturulmaz.
+- Purchase fingerprint/token material doğrudan kullanıcıya gösterilmez.
+- Gerekli yerel fingerprint/hash yalnız entitlement bütünlüğü/idempotency için kullanılabilir.
+- Aynı token/purchase birden fazla kez gelirse tekrar tekrar hak üretmez.
+- Ürün ID eşleşmesi zorunludur.
+- Başka ürün ID'si LP FAL Premium entitlement veremez.
 
 ---
 
-## 7. Offline davranış
+## 7. Process-death recovery
 
-- Son doğrulanmış aktif Premium state'i kısa süreli/offline UX için yerel snapshot olarak tutulabilir.
-- Yerel cache kalıcı source of truth değildir.
-- Bağlantı geri geldiğinde sessiz Play sync yapılır ve cache store sonucuna göre düzeltilir.
-- Süresi dolmuş/hold olmuş abonelik eski bir yerel boolean yüzünden sonsuza kadar Premium kalamaz.
-- Offline state'te ödeme/restore başlatılamıyorsa kullanıcıya anlaşılır hata gösterilir; uygulama Premium'u tahmin ederek açmaz.
-
----
-
-## 8. Premium → reklam suppression
-
-Premium aktif olduğunda tek merkezi controller üzerinden:
-- Rewarded kapalı.
-- Timed interstitial kapalı ve timer devre dışı.
-- App Open kapalı.
-- Banner/native kapalı.
-- Yüklü interstitial/rewarded/App Open/banner nesneleri dispose edilir.
-- Yeni AdMob request'i oluşturulmaz.
-- Banner/rail container UI'dan tamamen kaldırılır; boş alan bırakılmaz.
-
-Premium entitlement kaybedildiğinde:
-- reklam sistemi billing/restore ekranının ortasında aniden açılmaz,
-- önce entitlement state kesinleşir,
-- UMP/consent şartları sağlanır,
-- reklamlar yalnız güvenli/natural UI noktalarında yeniden hazırlanır.
-
-MIZAN'daki `setPremiumSuppressed(true) -> disposeLoadedAds()` prensibi LP FAL'de tüm kullanılan reklam formatlarını kapsayacak şekilde uygulanır.
+Satın alma sırasında uygulama öldürülürse:
+- callback kaybı Premium hakkını kalıcı olarak kaybettirmez,
+- sonraki launch/resume'da owned purchase sync yapılır,
+- valid ürün bulunursa Premium restore edilir,
+- duplicate callback sorun yaratmaz.
 
 ---
 
-## 9. Free reklam kuralları değişmez
+## 8. Offline davranış
 
-Bu restore mimarisi LP FAL'in mevcut reklam sayılarını değiştirmez:
-- Kahve tam sonuç: 2 Rewarded.
-- Tarot tam yorum: 2 Rewarded.
-- El Falı tam yorum: 2 Rewarded.
-- Gated chat paketi: 2 Rewarded.
-- Timed interstitial eligibility: 90 saniye aktif foreground kullanım + doğal geçiş.
-- Banner/App Open kuralları `MONETIZATION_V1.md` içindeki şekliyle geçerlidir.
+Premium daha önce valid Google Play hakkıyla doğrulanmışsa:
+- uygulama kısa süreli offline kullanımda son doğrulanmış Premium snapshot'ını UX için kullanabilir,
+- bu cache yeni Premium üretmek için kullanılamaz,
+- internet geldiğinde Play sync tekrar yapılır.
 
-MIZAN'daki 3 rewarded / 60 saniye gibi MIZAN'a özel sabitler LP FAL'e taşınmaz.
+Free kullanıcı interneti kapatarak yeni ücretli Premium oluşturamaz.
 
 ---
 
-## 10. AdMob/consent yapı prensibi
+## 9. Premium → reklam suppression
 
-MIZAN'daki güvenli desen LP FAL'e uyarlanır:
-- UMP consent çözülmeden reklam request'i yapılmaz.
-- Premium suppress edilmişse Mobile Ads gereksiz yere initialize edilmez.
-- Aynı anda birden fazla full-screen reklam gösterilmez.
-- Reward yalnız gerçek `onUserEarnedReward` callback'i ile sayılır.
-- Ad dismissal/failure sonrasında ilgili ad dispose edilir.
-- Free kullanıcı için gerekli reklamlar kontrollü biçimde preload edilebilir.
-- Test build yalnız Google test ad unit ID'leri kullanır.
-- Production ID'leri merkezi config / build environment üzerinden gelir.
-- Production build'de test ID veya boş/bozuk production ID tespit edilirse release gate fail olur.
+Premium aktif olduğunda merkezi monetizasyon katmanı:
+- Rewarded yükleme/gösterimi kapatır,
+- interstitial yükleme/gösterimi kapatır,
+- App Open kapatır,
+- banner/native kapatır,
+- yüklenmiş full-screen reklamları dispose eder,
+- banner container'larını kaldırır,
+- yeni reklam request'i üretmez,
+- 90 saniye timed interstitial timer'ını durdurur/sıfırlar.
 
----
-
-## 11. Premium ekranı
-
-Premium ekranında gerçek Play verisi kullanılacaktır:
-- Aylık Premium ürün adı/fiyatı.
-- Otomatik yenileme bilgisi.
-- Aboneliği iptal etmenin bir sonraki yenilemeyi durdurduğu; mevcut paid-through-end hakkın Play state'ine göre devam edeceği bilgisi.
-- `Satın Al`.
-- `Satın Alımları Geri Yükle`.
-- `Aboneliği Yönet` → Google Play abonelik yönetimi.
-- Privacy / Terms / gerekiyorsa satın alma koşulları erişimi.
-
-V1 aylık-only olduğu için Premium ekranında lifetime satın alma gösterilmez.
+Premium state değişimi billing ekranının ortasında kullanıcıya reklam göstermemelidir.
 
 ---
 
-## 12. Process death / recovery
+## 10. UI metin standardı
 
-Aşağıdaki senaryoda satın alma kaybolmuş sayılmaz:
-1. Kullanıcı Play ödeme ekranını açar.
-2. Satın alma gerçekleşir veya pending olur.
-3. Android uygulama process'ini öldürür / uygulama kapanır.
-4. Sonraki açılışta purchase listener + owned-purchase sync store state'ini tekrar okur.
-5. Entitlement doğru state'e getirilir.
+Kullanıcıya görünen doğru metinler:
+- `LP FAL Premium`
+- `Premium`
+- `Premium'a Geç`
+- `Premium Aktif`
+- `Satın Alımı Geri Yükle`
+- `Tek seferlik satın alım · Abonelik değildir.`
 
-UI callback'inin kaçırılması tek başına Premium kaybına yol açamaz.
-
----
-
-## 13. Blocking QA matrisi
-
-Aşağıdakiler test edilmeden Premium fazı final sayılmaz:
-- [ ] Yeni aylık satın alma başarılı → Premium anında/Play callback sonrası aktif.
-- [ ] Pending satın alma → ödeme tamamlanmadan Premium yok.
-- [ ] Kullanıcı purchase sheet'i iptal etti → Premium yok.
-- [ ] Clean install + aynı Google hesabında aktif abonelik → otomatik restore.
-- [ ] App data clear/reinstall sonrası aktif abonelik → restore.
-- [ ] Manuel `Satın Alımları Geri Yükle` → doğru state.
-- [ ] Zaten aktif Premium'da restore → duplicate state yok.
-- [ ] App resume → silent sync.
-- [ ] Offline → online reconnect → silent sync.
-- [ ] Process death satın alma sırasında → sonraki launch state recovery.
-- [ ] Yenileme → Premium kesilmiyor.
-- [ ] Grace period → Premium/reklamsız devam ediyor.
-- [ ] Cancelled-but-paid-through-end → bitişe kadar Premium devam ediyor.
-- [ ] Account hold → Premium kapanıyor.
-- [ ] Expired → Premium kapanıyor.
-- [ ] Revoked/refunded entitlement yok → Premium kapanıyor.
-- [ ] Duplicate purchase stream callback → idempotent.
-- [ ] Invalid/empty Play verification data → Premium verilmez.
-- [ ] Premium aktif olur olmaz yüklü reklamlar dispose ediliyor.
-- [ ] Premium aktifken sıfır Rewarded/interstitial/App Open/banner request/container.
-- [ ] Premium bittiğinde reklamlar billing ekranının ortasında patlamıyor; güvenli akışta geri geliyor.
-- [ ] Store fiyatı UI'da Play `ProductDetails` üzerinden geliyor.
-- [ ] Debug/test build yalnız test AdMob ID.
-- [ ] Release build yalnız doğrulanmış production AdMob ID.
+Kullanılmayacak:
+- `PRO`
+- `Pro`
+- `Ömür Boyu Premium`
+- `Lifetime Premium`
+- `Aylık Premium`
+- `Aboneliği Yönet`
 
 ---
 
-## 14. MIZAN güvenlik sınırı
+## 11. Hata durumları
 
-Bu şartname hazırlanırken MIZANGLOBAL yalnız okunmuştur. LP FAL çalışması sırasında:
-- MIZAN dosyaları değiştirilmez,
-- MIZAN branch/ref'i ilerletilmez,
-- MIZAN ürün kimliği LP FAL'e kopyalanmaz,
-- MIZAN'ın lifetime Premium davranışı LP FAL'e taşınmaz.
+UI en az şu state'leri ayırabilmelidir:
+- store unavailable,
+- product unavailable,
+- purchase pending,
+- purchase canceled,
+- purchase error,
+- restore/sync error,
+- invalid purchase proof,
+- acknowledgement/complete error,
+- already owned / Premium already active.
 
-Alınan şey yalnız test edilmiş **mimari desen**dir: `purchase stream → Play sync/restore → entitlement snapshot → merkezi ad suppression`.
+Hiçbiri uygulamayı crash/freeze etmemelidir.
+
+---
+
+## 12. Release test matrisi — bloklayıcı
+
+- [ ] İlk satın alma başarılı → Premium aktif.
+- [ ] Pending ödeme Premium vermiyor.
+- [ ] Cancel akışı Premium vermiyor.
+- [ ] Aynı purchase callback iki kez gelince duplicate hak yok.
+- [ ] Uygulama satın alma sırasında öldürülüp yeniden açılınca Premium restore ediliyor.
+- [ ] Clean install sonrası aynı Play hesabında Premium geri geliyor.
+- [ ] Yeni cihaz senaryosunda Premium geri geliyor.
+- [ ] Manuel `Satın Alımı Geri Yükle` çalışıyor.
+- [ ] İnternet geri gelince sessiz sync çalışıyor.
+- [ ] App resume sync çalışıyor.
+- [ ] Geçersiz/boş Play proof Premium vermiyor.
+- [ ] Yanlış product ID Premium vermiyor.
+- [ ] Premium aktifken rewarded/interstitial/App Open/banner/native request yok.
+- [ ] Premium aktifken boş reklam container yok.
+- [ ] Premium ekranında fiyat hard-code değil, Google Play'den geliyor.
+- [ ] Uygulamada subscription ürünü/base-plan mantığı yok.
+- [ ] Kullanıcı UI'ında Premium özelliği için `PRO/Pro` yok.
+- [ ] `Ömür Boyu` / `Lifetime` paket adı yok.
+
+**Bu testlerden biri başarısızsa Premium sistemi final kabul edilmez.**
