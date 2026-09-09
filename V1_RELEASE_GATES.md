@@ -1,7 +1,7 @@
 # LP FAL — V1 Ek Release Gates
 
 **Durum:** ZORUNLU / normatif  
-**Bağlı dosyalar:** `SPECIFICATION.md`, `TODO.md`, `MONETIZATION_V1.md`
+**Bağlı dosyalar:** `SPECIFICATION.md`, `TODO.md`, `MONETIZATION_V1.md`, `BILLING_RESTORE_SPEC.md`
 
 Bu dosyadaki maddeler V1 final kontrolünün zorunlu parçasıdır.
 
@@ -147,7 +147,7 @@ V1 sabiti:
 - Yalnız foreground aktif kullanım sayılır.
 - 90 sn dolması sadece eligibility oluşturur.
 - Reklam ancak sonraki güvenli/doğal geçişte gösterilir.
-- Fotoğraf capture/select, Qwen inference, fal sonucu aktif okuma, tarot selection, el capture/analysis, chat typing/generation, rewarded, billing/consent sırasında gösterilmez.
+- Fotoğraf capture/select, Qwen inference, fal sonucu aktif okuma, tarot selection, el capture/analysis, chat typing/generation, rewarded, billing/restore/consent sırasında gösterilmez.
 
 ### Banner
 - Telefon: tek anchored adaptive banner, yalnız güvenli ekranlarda.
@@ -157,24 +157,65 @@ V1 sabiti:
 
 ### Premium
 Premium aktifken Rewarded, timed interstitial, App Open, banner/native dahil **bütün reklam sistemi kapalıdır**.
+- Yüklü reklam objeleri dispose edilir.
+- Yeni reklam request'i gönderilmez.
+- Reklam container/boş alanı kalmaz.
 
 ---
 
-## 9. Billing gate'i
+## 9. Billing / Google Play restore gate'i
 
-Tek ürün: aylık otomatik yenilenen reklamsız Premium.
+`BILLING_RESTORE_SPEC.md` bu bölümün detaylı normatif kaynağıdır.
+
+Tek ürün: **aylık otomatik yenilenen reklamsız Premium**. Lifetime/non-consumable Premium V1 kapsamında değildir.
+
+MIZANGLOBAL yalnız read-only mimari referanstır. LP FAL'e taşınacak desen:
+`purchaseStream → Google Play owned-entitlement sync/restore → doğrulanmış local snapshot → merkezi ad suppression`.
+
+Zorunlu mimari:
+- purchase listener satın alma/restore akışından önce hazır,
+- purchase ve restore tek validation hattında,
+- local Premium boolean tek başına source of truth değil,
+- Play purchase token/verification data olmadan ücretli Premium yok,
+- startup/app-resume/reconnect silent sync,
+- manuel `Satın Alımları Geri Yükle`,
+- duplicate callback idempotent,
+- process-death recovery,
+- Store fiyatı/para birimi Play metadata'sından,
+- `Aboneliği Yönet` Google Play yönetim akışına bağlı.
+
+State matrisi:
+- active / renewed → Premium açık,
+- pending initial purchase → Premium kapalı,
+- grace period → Premium açık,
+- cancelled fakat paid-through-end → dönem bitene kadar Premium açık,
+- account hold → Premium kapalı,
+- expired → Premium kapalı,
+- revoked/refunded ve entitlement yok → Premium kapalı.
 
 Test zorunlu:
-- purchase,
-- pending,
-- cancel flow,
-- restore/query,
-- renewal,
-- grace period,
-- account hold,
-- expiry/cancel,
-- process-death recovery,
-- subscription management link.
+- [ ] Yeni aylık purchase.
+- [ ] Pending purchase.
+- [ ] User cancel/error flow.
+- [ ] Clean install + aynı Play hesabında aktif abonelik → otomatik restore.
+- [ ] Reinstall/app-data-clear sonrası restore.
+- [ ] Manuel restore.
+- [ ] Zaten aktif Premium'da restore idempotent.
+- [ ] App resume silent sync.
+- [ ] Offline → online reconnect silent sync.
+- [ ] Renewal.
+- [ ] Grace period.
+- [ ] Cancelled-but-paid-through-end.
+- [ ] Account hold.
+- [ ] Expiry.
+- [ ] Revoke/refund entitlement removal.
+- [ ] Process death purchase sırasında ve sonraki recovery.
+- [ ] Duplicate purchase-stream callback.
+- [ ] Invalid/empty verification data Premium üretmiyor.
+- [ ] Subscription management link.
+- [ ] Store fiyatı hard-code değil.
+- [ ] Premium aktifleşince bütün yüklü reklamlar dispose.
+- [ ] Premium aktifken sıfır ad request/container.
 
 ---
 
@@ -189,6 +230,7 @@ Test zorunlu:
 - Üçüncü taraf asset lisansları.
 - AdMob UMP gereken bölgelerde request öncesi.
 - Development yalnız test reklam ID'leri.
+- Release build'de doğrulanmış production AdMob ID'leri; test ID sızıntısı yok.
 
 ---
 
@@ -210,7 +252,9 @@ Test zorunlu:
 - [ ] Telefon banner güvenli spacing.
 - [ ] Tablet/BlueStacks side banner layout.
 - [ ] Premium'da sıfır ad request/container.
+- [ ] Billing clean-install restore.
 - [ ] Billing pending/grace/account-hold/expiry.
+- [ ] Billing process-death/reconnect recovery.
 - [ ] Network isolation Kahve + El + Chat.
 - [ ] Production sensitive logs kapalı.
 - [ ] TalkBack/font scaling.
@@ -230,10 +274,11 @@ Aşağıdakilerden biri eksikse final yok:
 7. Her free reward unlock 2 Rewarded.
 8. Timed interstitial 90 sn eligibility + doğal geçiş.
 9. Banner güvenli yerleşim.
-10. Premium tamamen reklamsız.
-11. Fotoğraflar varsayılan geçici ve eğitim verisi değil.
-12. Privacy/Data Safety/AI report/lisans tamam.
-13. 4/6/8 GB + tablet/BlueStacks QA.
-14. Signed APK/AAB clean test başarılı.
+10. Premium tamamen reklamsız ve entitlement Google Play restore/sync ile doğrulanıyor.
+11. Clean install/reinstall/process-death restore testleri başarılı.
+12. Fotoğraflar varsayılan geçici ve eğitim verisi değil.
+13. Privacy/Data Safety/AI report/lisans tamam.
+14. 4/6/8 GB + tablet/BlueStacks QA.
+15. Signed APK/AAB clean test başarılı.
 
 **Bu dosya `TODO.md` final fazının zorunlu girdisidir.**
