@@ -13,6 +13,7 @@ Geliştirme ve final kontrolünde aşağıdaki dosyalar birlikte takip edilir:
 5. [`BILLING_RESTORE_SPEC.md`](./BILLING_RESTORE_SPEC.md) — Google Play satın alma/restore davranışı.
 6. [`PRODUCT_MODEL_V1.md`](./PRODUCT_MODEL_V1.md) — **Premium ürün modeli ve isim standardında ana kaynak**.
 7. [`FUNCTIONAL_UI_GATES.md`](./FUNCTIONAL_UI_GATES.md) — mockup'ların gerçek Flutter UI'a dönüşüm kabul şartları.
+8. [`UI_ASSET_MANIFEST.md`](./UI_ASSET_MANIFEST.md) — repo içindeki üretilmiş UI görsellerinin dosya/SHA envanteri ve görsel-copy gate'i.
 
 ## V1 kapsamı
 
@@ -25,7 +26,7 @@ Geliştirme ve final kontrolünde aşağıdaki dosyalar birlikte takip edilir:
 - AdMob monetizasyonu
 - **LP FAL Premium: tek seferlik Google Play satın alımı, abonelik yok**
 
-Premium kullanıcı arayüzünde yalnız **Premium** adı kullanılır. `PRO/Pro`, `Ömür Boyu Premium` ve `Lifetime Premium` kullanıcıya görünen ürün adı olarak kullanılmaz.
+Premium kullanıcı arayüzünde yalnız **Premium** adı kullanılır. Eski plan etiketi veya süre/abonelik çağrıştıran paket adı kullanıcıya gösterilmez.
 
 Satın alma ekranı açıklaması: **Tek seferlik satın alım · Abonelik değildir.**
 
