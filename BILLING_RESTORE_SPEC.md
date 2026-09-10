@@ -1,7 +1,7 @@
 # LP FAL — Google Play Satın Alma / Restore Şartname Eki
 
 **Durum:** ZORUNLU / normatif  
-**Kapsam:** V1 tek seferlik Premium satın alımı, Google Play restore/senkronizasyonu ve Premium–reklam entegrasyonu  
+**Kapsam:** V1 tek seferlik Premium satın alımı, Google Play otomatik restore/senkronizasyonu ve Premium–reklam entegrasyonu  
 **Ürün modeli ana kaynağı:** `PRODUCT_MODEL_V1.md`
 
 ---
@@ -17,6 +17,7 @@ LP FAL V1'de tek ücretli ürün **LP FAL Premium**'dur.
 - Açıklama: **Tek seferlik satın alım · Abonelik değildir.**
 - Fiyat ve para birimi Google Play ürün bilgisinden gösterilir; hard-code edilmez.
 - Google Play Console ürün kimliği tek merkezi config'te tutulur; UI içine magic string dağılmaz.
+- Restore kullanıcıya gösterilen bir özellik değildir; tamamen arka planda çalışır.
 
 ---
 
@@ -35,8 +36,9 @@ LP FAL'e taşınacak prensipler:
 8. Premium state değişince reklam servisi merkezi yeniden değerlendirilir.
 9. Premium aktif olduğunda yüklenmiş reklamlar dispose edilir ve yeni reklam request'i yapılmaz.
 10. Aynı satın alma tekrar geldiğinde idempotent davranılır.
+11. Restore/sync kullanıcı etkileşimi istemez ve görünür UI üretmez.
 
-MIZAN'a özel lifetime ürün adı, promosyon mantığı, günlük geçici Premium ve MIZAN reklam sayıları LP FAL'e kopyalanmaz.
+MIZAN'a özel ürün adı, promosyon mantığı, günlük geçici Premium ve MIZAN reklam sayıları LP FAL'e kopyalanmaz.
 
 ---
 
@@ -80,8 +82,8 @@ Başarısız/cancelled satın alma ücretsiz entitlement üretmez.
 
 ## 5. Google Play restore / entitlement source of truth
 
-### Otomatik restore
-Kullanıcı normal şartlarda ayrıca restore butonuna basmak zorunda kalmamalıdır. Aşağıdaki anlarda sessiz senkronizasyon yapılır:
+### Otomatik ve görünmez restore
+Kullanıcı restore diye bir özellik görmez ve ayrıca hiçbir butona basmaz. Aşağıdaki anlarda sessiz senkronizasyon yapılır:
 - clean install / ilk uygun açılış,
 - normal uygulama açılışı,
 - app resume,
@@ -91,15 +93,17 @@ Kullanıcı normal şartlarda ayrıca restore butonuna basmak zorunda kalmamalı
 
 Android'de owned Play satın alımı güncel desteklenen Billing API / Flutter `in_app_purchase` Android katmanı üzerinden sorgulanır. Restore edilen satın alma bilgileri aynı validation hattında işlenir.
 
-### Manuel restore
-Premium veya Ayarlar ekranında:
-- **`Satın Alımı Geri Yükle`** aksiyonu bulunur.
-- Bu buton otomatik senkronizasyonun alternatifi değil, ek recovery yoludur.
+### UI kuralı
+- Premium ekranında restore butonu YOK.
+- Ayarlar ekranında restore butonu YOK.
+- `Satın Alımı Geri Yükle`, `Restore`, `Geri Yükle` gibi teknik kullanıcı metinleri YOK.
+- Otomatik restore/sync loading spinner, popup veya ayrı status ekranı üretmez.
+- Restore başarısızsa kullanıcı normal akışta kalır; sistem sonraki uygun lifecycle/network olayında sessizce tekrar dener.
 
 ### Clean install / yeni cihaz
 Aynı Google Play hesabında ürün hâlâ owned ise:
 - tekrar ödeme istenmez,
-- sessiz sync veya manuel restore Premium'u geri getirir.
+- sessiz sync Premium'u otomatik geri getirir.
 
 ---
 
@@ -120,7 +124,7 @@ Aynı Google Play hesabında ürün hâlâ owned ise:
 Satın alma sırasında uygulama öldürülürse:
 - callback kaybı Premium hakkını kalıcı olarak kaybettirmez,
 - sonraki launch/resume'da owned purchase sync yapılır,
-- valid ürün bulunursa Premium restore edilir,
+- valid ürün bulunursa Premium otomatik restore edilir,
 - duplicate callback sorun yaratmaz.
 
 ---
@@ -159,7 +163,6 @@ Kullanıcıya görünen doğru metinler:
 - `Premium`
 - `Premium'a Geç`
 - `Premium Aktif`
-- `Satın Alımı Geri Yükle`
 - `Tek seferlik satın alım · Abonelik değildir.`
 
 Kullanılmayacak:
@@ -169,23 +172,25 @@ Kullanılmayacak:
 - `Lifetime Premium`
 - `Aylık Premium`
 - `Aboneliği Yönet`
+- `Satın Alımı Geri Yükle`
+- `Restore`
+- `Geri Yükle`
 
 ---
 
 ## 11. Hata durumları
 
-UI en az şu state'leri ayırabilmelidir:
+UI en az şu satın alma state'lerini ayırabilmelidir:
 - store unavailable,
 - product unavailable,
 - purchase pending,
 - purchase canceled,
 - purchase error,
-- restore/sync error,
 - invalid purchase proof,
 - acknowledgement/complete error,
 - already owned / Premium already active.
 
-Hiçbiri uygulamayı crash/freeze etmemelidir.
+Restore/sync hatası teknik olarak loglanabilir fakat kullanıcıya restore özelliği olarak sunulmaz. Hiçbir hata uygulamayı crash/freeze etmemelidir.
 
 ---
 
@@ -195,10 +200,10 @@ Hiçbiri uygulamayı crash/freeze etmemelidir.
 - [ ] Pending ödeme Premium vermiyor.
 - [ ] Cancel akışı Premium vermiyor.
 - [ ] Aynı purchase callback iki kez gelince duplicate hak yok.
-- [ ] Uygulama satın alma sırasında öldürülüp yeniden açılınca Premium restore ediliyor.
-- [ ] Clean install sonrası aynı Play hesabında Premium geri geliyor.
-- [ ] Yeni cihaz senaryosunda Premium geri geliyor.
-- [ ] Manuel `Satın Alımı Geri Yükle` çalışıyor.
+- [ ] Uygulama satın alma sırasında öldürülüp yeniden açılınca Premium otomatik restore ediliyor.
+- [ ] Clean install sonrası aynı Play hesabında Premium otomatik geri geliyor.
+- [ ] Yeni cihaz senaryosunda Premium otomatik geri geliyor.
+- [ ] Kullanıcı UI'ında restore/geri yükleme butonu yok.
 - [ ] İnternet geri gelince sessiz sync çalışıyor.
 - [ ] App resume sync çalışıyor.
 - [ ] Geçersiz/boş Play proof Premium vermiyor.
