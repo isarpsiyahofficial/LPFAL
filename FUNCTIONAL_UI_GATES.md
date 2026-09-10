@@ -4,11 +4,10 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 
 ## 1. V1 kapsamı korunacak
 - V1 gerçek modüller: **Kahve Falı, Tarot Falı, Rüya Tabiri, El Falı**, aktif fal/rüyaya bağlı AI sohbeti, geçmiş, Premium, profil/ayarlar, reklamlar ve cihaz içi Qwen.
-- Rüya Tabiri konusunda `DREAM_INTERPRETATION_SPEC.md` normatiftir ve eski `Rüya Tabiri kapsam dışı` ifadelerini geçersiz kılar.
+- Rüya Tabiri konusunda `DREAM_INTERPRETATION_SPEC.md` normatiftir.
 - Uygulama genelinde `COMPLIANCE_BY_DESIGN.md` zorunludur.
 - Mockup'larda görünen Günlük Yorum, Aşk Uyumu, Kariyer modülü vb. V1 kapsamına otomatik olarak girmez.
 - Premium ürün modeli ve kullanıcıya görünen adlandırmada `PRODUCT_MODEL_V1.md` ana kaynaktır.
-- Çatışma halinde ürün kapsamı için güncel normatif dosyalar uygulanır; Premium isimlendirmesinde `PRODUCT_MODEL_V1.md`, Rüya Tabiri için `DREAM_INTERPRETATION_SPEC.md`, global compliance için `COMPLIANCE_BY_DESIGN.md` önceliklidir.
 
 ## 2. Gerçek AI sohbeti — statik görsel yasak
 - Sohbet ekranı gerçek, kaydırılabilir mesaj listesi içerecek.
@@ -25,7 +24,6 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 - Free kullanıcı: ilk takip sorusu ücretsiz; ardından her 3 kullanıcı mesajı paketi için 2 Rewarded Ad. Premium: reklam kapısı yok.
 - Chat geçmişi yerel saklanacak ve yeni fal/rüya başladığında yeni conversation context açılacak.
 - Sağlık, psikoloji, hukuk, finans, din, ölüm, hamilelik vb. alanlarda kesinlik veya yönlendirici tavsiye üretilmeyecek.
-- Kullanıcı `Ne yapmalıyım?` diye sorsa bile AI önemli hayat kararı için öneri/direktif vermeyecek.
 - Tüm AI mesajlarında erişilebilir in-app `Bildir`/flag akışı bulunacak.
 
 ## 3. Android kamera ve galeri — gerçek entegrasyon
@@ -56,7 +54,7 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 - Kullanıcı 2–3 fotoğraf ekleyebilir; 3 fotoğraf önerilir.
 - Fotoğraf kartları ekleme/silme/yeniden çekme işlevine sahip olacak.
 - `Analiz Et` ancak minimum geçerli fotoğraf şartı sağlanınca aktif olacak.
-- AI analiz ekranı gerçek inference durumunu gösterecek; sahte yüzde ilerleme kullanılmayacak. Yüzde gösterilecekse gerçek pipeline state'inden üretilecek.
+- AI analiz ekranı gerçek inference durumunu gösterecek; sahte yüzde ilerleme kullanılmayacak.
 
 ## 5. El Falı ekranı
 - Kullanıcı 1–2 avuç içi fotoğrafı ekleyebilir.
@@ -76,20 +74,17 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 ## 7. Rüya Tabiri ekranı
 - Dashboard'da **Rüya Tabiri** gerçek route/card olarak bulunacak.
 - `Rüyanı Anlat`/`Rüyanı Yorumla` CTA gerçek rüya giriş ekranını açacak.
-- Rüya giriş alanı gerçek çok satırlı `TextField/TextFormField` olacak; mockup içine gömülü sahte metin alanı kabul edilmez.
+- Rüya giriş alanı gerçek çok satırlı `TextField/TextFormField` olacak.
 - Kullanıcı rüyasını yazmadan `Yorumla` aktif olmayacak.
 - Opsiyonel duygu seçimi gerçek state olacak; zorunlu olmayacak.
 - Rüya metni kullanıcı göndermeden AI pipeline'a aktarılmayacak.
 - AI ilk aşamada structured dream extraction yapacak; kullanıcının yazmadığı sembol/sahne UI'a eklenmeyecek.
-- Loading state gerçek pipeline adımlarını gösterecek: `Rüyan okunuyor` → `Semboller ayrıştırılıyor` → `Sembolik yorum hazırlanıyor` gibi.
 - Sahte yüzde ilerleme yok.
-- Sonuç ekranı gerçek scrollable içerik olacak; metin screenshot'ın içine basılı halde olmayacak.
-- Sonuç bölümleri en az: kısa özet, semboller, duygusal atmosfer, sembolik temalar, genel sembolik yorum, belirsizlik/disclaimer.
+- Sonuç ekranı gerçek scrollable içerik olacak.
 - `Tavsiye`, `Ne yapmalısın`, `Karar` bölümü bulunmayacak.
 - `Rüya hakkında sohbet et` gerçek aktif-rüya chat context'i açacak.
 - Sonuç ve AI chat mesajlarında `Bildir` aksiyonu erişilebilir olacak.
 - Rüya metni production log/analytics'e yazılmayacak.
-- Geçmiş kaydı rüya + yorum + bağlı chat ile gerçek local persistence kullanacak; kullanıcı silebilecek.
 
 ## 8. Navigasyon, Premium ve butonlar
 - Dashboard Kahve/Tarot/Rüya/El kartları gerçek route/navigation butonlarıdır.
@@ -99,8 +94,10 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 - `PRO`, `Pro`, `Ömür Boyu Premium` ve `Lifetime Premium` kullanıcı metni olarak kullanılmaz.
 - Satın alma açıklaması: `Tek seferlik satın alım · Abonelik değildir.`
 - Satın alma CTA'sı: `Premium'a Geç` veya `Premium'u Aç`.
-- Restore CTA'sı: `Satın Alımı Geri Yükle`.
-- Geri, gönder, kamera, galeri, kart seç, rüya yorumla, analiz, retry, report ve restore kontrollerinin tamamı gerçek callback/state'e bağlıdır.
+- **Restore kullanıcıya görünmez. Premium veya Ayarlar ekranında restore/geri yükleme butonu bulunmaz.**
+- `Satın Alımı Geri Yükle`, `Restore`, `Geri Yükle` gibi teknik restore metinleri kullanıcı UI'ında gösterilmez.
+- Restore açılış/resume/internet geri gelişi/clean install/yeni cihaz akışlarında arka planda sessiz ve otomatik çalışır.
+- Geri, gönder, kamera, galeri, kart seç, rüya yorumla, analiz, retry ve report kontrollerinin tamamı gerçek callback/state'e bağlıdır.
 - Görsel üstüne basılmış sahte UI metni/button kabul edilmez.
 
 ## 9. Global compliance UI
@@ -116,7 +113,6 @@ Bu dosya, `design_refs/ui/` altındaki üretilmiş ekran mockup'larının uygula
 - Safe area, notch, gesture navigation desteklenmeli.
 - Kritik touch target >=48dp.
 - TalkBack için anlamlı semantic label bulunmalı.
-- Rüya text input, report, disclaimer ve Premium CTA dahil erişilebilirlik etiketleri olmalı.
 - Font scaling kritik ekranları bozmamalı.
 
 ## 11. Kabul testi — bloklayıcı
@@ -128,12 +124,13 @@ Aşağıdakiler manuel/otomatik test edilmeden ilgili UI fazı tamamlanmış say
 - Tarot kartlarına dokunma selection state'ini değiştiriyor ve duplicate üretmiyor.
 - Rüya text input/gönder/structured extraction/result/persistence çalışıyor.
 - Rüya AI kullanıcı inputunda olmayan ayrıntı uydurmuyor.
-- Rüya sonucu tavsiye/danışmanlık/karar bölümü üretmiyor.
 - Chat input, send, Qwen generation, loading, retry/cancel ve persistence dört modülde çalışıyor.
 - AI report/flag sonucu ve chat mesajından çalışıyor.
 - Free/Premium reklam kapıları doğru uygulanıyor.
 - Rüya tam sonucu Free kullanıcıda 2 Rewarded gerektiriyor.
-- Premium satın alma + otomatik restore + manuel restore çalışıyor.
+- Premium satın alma çalışıyor.
+- Clean install/yeni cihaz/app resume/internet dönüşünde **otomatik ve görünmez restore** çalışıyor.
+- Kullanıcı UI'ında restore/geri yükleme butonu veya teknik restore metni bulunmuyor.
 - Premium aktifken hiçbir reklam request/container/gösterimi yok.
 - Uygulama içi kullanıcı metinlerinde Premium özelliği için `PRO/Pro` bulunmuyor.
 - `COMPLIANCE_BY_DESIGN.md` high-risk ve misleading-claim testleri geçiyor.
@@ -142,6 +139,4 @@ Aşağıdakiler manuel/otomatik test edilmeden ilgili UI fazı tamamlanmış say
 ## 12. Tasarım referansları
 `design_refs/ui/` altındaki JPG dosyaları ekranların görsel dilini, yerleşim fikrini, tipografi/ışık/kompozisyon yönünü anlatır. Uygulama bunları birebir screenshot olarak kullanmak yerine mevcut gerçek asset'ler + Flutter component'leriyle yeniden kurar.
 
-Eski JPG mockup içinde `PRO/Pro` yazısı görünüyorsa bu copy **legacy/geçersiz** kabul edilir; runtime'da ve yeni görsel referanslarda yalnız `Premium` kullanılacaktır.
-
-Eski mockup içinde Rüya Tabiri dışında V1'e alınmamış modüller görünmesi bu modülleri kapsam içine sokmaz. Rüya Tabiri ise artık `DREAM_INTERPRETATION_SPEC.md` ile gerçek V1 modülüdür.
+Eski JPG mockup içinde legacy Premium/restore copy görünüyorsa bu copy **geçersiz** kabul edilir; runtime'da ve yeni görsel referanslarda kullanılmaz.
