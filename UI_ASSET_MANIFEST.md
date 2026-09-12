@@ -1,13 +1,13 @@
 # LP FAL — UI Asset Manifest / Görsel Repo Kontrolü
 
-**Kontrol tarihi:** 2026-09-10  
+**Kontrol tarihi:** 2026-09-12  
 **Durum:** Repo `main` üzerinde doğrulandı.
 
 Bu dosya üretilmiş UI görsellerinin repoda gerçekten bulunduğunu kayıt altına alır ve Premium metin standardını görsel katmana bağlar.
 
 ## 1. Full-screen tasarım referansları — `design_refs/ui/`
 
-Aşağıdaki **8 JPG** repo içinde mevcut:
+Aşağıdaki **9 JPG** repo içinde mevcut:
 
 | Dosya | Blob SHA | Boyut |
 |---|---|---:|
@@ -18,6 +18,7 @@ Aşağıdaki **8 JPG** repo içinde mevcut:
 | `design_refs/ui/dashboard_screen_concept.jpg` | `c489183738735f7e850764bf92e5c532ae2e9c83` | 7,723 B |
 | `design_refs/ui/dream_interpretation_screen_concept.jpg` | `6be2fac5394c1c27b8bc0bfb0088716c308160e1` | 10,628 B |
 | `design_refs/ui/palm_capture_screen_concept.jpg` | `bf872f44d6bf1e043244a5b0c0f4bab7a7b1fb22` | 8,358 B |
+| `design_refs/ui/premium_screen_concept.jpg` | `747847a9bc2df0e58baead76d57cbd082413753e` | 60,342 B |
 | `design_refs/ui/tarot_screen_concept.jpg` | `de24d0a632f086faa41f0fec701bfee280ebca72` | 7,602 B |
 
 Bu dosyalar **yalnız tasarım referansıdır**. Runtime'da tam ekran screenshot olarak kullanılmaz.
@@ -42,16 +43,16 @@ Aşağıdaki **11 JPG** repo içinde mevcut:
 
 ## 3. Toplam doğrulanan görseller
 
-- Tasarım referansı: **8**
+- Tasarım referansı: **9**
 - `assets/ui` görseli: **11**
-- Toplam repo içinde doğrulanan JPG: **19**
+- Toplam repo içinde doğrulanan JPG: **20**
 
-Son onaylanan Rüya Tabiri ekranı `dream_interpretation_screen_concept.jpg` olarak kaydedildi. Önceki Rüya taslağı değil, kullanıcının onayladığı; geçmiş rüyalarda thumbnail kullanmayan ve `Duygu Ekle` akışını gösteren sürüm referanstır.
+Son onaylanan Premium ekranı `premium_screen_concept.jpg` olarak kaydedildi. Bu sürümde kullanıcıya görünen restore butonu/metni yoktur; restore yalnız arka planda otomatik ve sessiz çalışacaktır.
 
 ## 4. Geçersiz / yeniden üretilecek mockup politikası
 
 Aşağıdaki eski tasarım yönleri geçerli referans sayılmaz ve mevcut UI standardını değiştiremez:
-- eski Premium ekranındaki abonelik/çoklu plan/legacy plan etiketi,
+- eski Premium ekranındaki abonelik/çoklu plan/legacy plan etiketi veya görünür restore kontrolü,
 - eski Geçmiş ekranındaki kayıt thumbnail görselleri,
 - eski Rüya ekranındaki geçmiş rüya thumbnail görselleri,
 - `Kozmik Falın` gibi LP FAL dışı geçici marka metinleri.
@@ -69,6 +70,10 @@ Kullanılacak:
 Satın alma açıklaması:
 - `Tek seferlik satın alım · Abonelik değildir.`
 
+Restore davranışı:
+- Kullanıcıya restore butonu/metni gösterilmez.
+- Google Play entitlement açılış/resume/internet geri gelişi gibi uygun anlarda arka planda sessizce senkronize edilir.
+
 ## 6. JPG içi legacy metin politikası
 
 `design_refs/ui/*.jpg` dosyaları raster/JPG olduğundan içlerindeki yazı runtime copy kaynağı değildir. Eski görselde legacy plan etiketi görülürse uygulamaya taşınmaz. Flutter widget copy'si şartnamedeki güncel metin olur ve yeni/yenilenen mockup yalnız güncel standardı kullanır.
@@ -82,6 +87,7 @@ Satın alma açıklaması:
 - [ ] Runtime UI'da Premium için eski plan etiketi yok.
 - [ ] Runtime UI'da süre/abonelik çağrıştıran plan adı yok.
 - [ ] Premium plan adı `LP FAL Premium`.
+- [ ] Premium UI'da görünür restore butonu/metni yok.
 - [ ] Geçmiş kayıt listelerinde fal/rüya thumbnail görseli yok.
 - [ ] Tasarım JPG'leri tam ekran statik UI olarak kullanılmıyor.
 
