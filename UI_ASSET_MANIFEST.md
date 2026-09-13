@@ -1,94 +1,104 @@
 # LP FAL — UI Asset Manifest / Görsel Repo Kontrolü
 
-**Kontrol tarihi:** 2026-09-12  
+**Kontrol tarihi:** 2026-09-13  
 **Durum:** Repo `main` üzerinde doğrulandı.
 
-Bu dosya üretilmiş UI görsellerinin repoda gerçekten bulunduğunu kayıt altına alır ve Premium metin standardını görsel katmana bağlar.
+Bu dosya üretilmiş UI görsellerinin repoda gerçekten bulunduğunu kayıt altına alır ve runtime / tasarım referansı ayrımını bağlayıcı hale getirir.
 
-## 1. Full-screen tasarım referansları — `design_refs/ui/`
+## 1. Full-screen / tasarım referansları — `design_refs/ui/`
 
-Aşağıdaki **9 JPG** repo içinde mevcut:
+Repo içinde **11 tasarım referansı** vardır:
 
-| Dosya | Blob SHA | Boyut |
-|---|---|---:|
-| `design_refs/ui/analysis_screen_concept.jpg` | `6f55d8c2d01f0fcb00b109e99e47219c47b9a148` | 8,141 B |
-| `design_refs/ui/chat_screen_concept_v1.jpg` | `d17892bc02f1c88ad3d2a62eeb6febc4634cc254` | 7,537 B |
-| `design_refs/ui/chat_screen_concept_v2.jpg` | `6c4523de1b25cfdbbd9a32c00c32cb71ae81c8aa` | 7,573 B |
-| `design_refs/ui/coffee_capture_screen_concept.jpg` | `1dc3589c283ea90e0453dc3dad7d4be45ba71f71` | 8,000 B |
-| `design_refs/ui/dashboard_screen_concept.jpg` | `c489183738735f7e850764bf92e5c532ae2e9c83` | 7,723 B |
-| `design_refs/ui/dream_interpretation_screen_concept.jpg` | `6be2fac5394c1c27b8bc0bfb0088716c308160e1` | 10,628 B |
-| `design_refs/ui/palm_capture_screen_concept.jpg` | `bf872f44d6bf1e043244a5b0c0f4bab7a7b1fb22` | 8,358 B |
-| `design_refs/ui/premium_screen_concept.jpg` | `747847a9bc2df0e58baead76d57cbd082413753e` | 60,342 B |
-| `design_refs/ui/tarot_screen_concept.jpg` | `de24d0a632f086faa41f0fec701bfee280ebca72` | 7,602 B |
+- `analysis_screen_concept.jpg`
+- `chat_screen_concept_v1.jpg`
+- `chat_screen_concept_v2.jpg`
+- `coffee_capture_screen_concept.jpg`
+- `dashboard_screen_concept.jpg`
+- `dream_interpretation_screen_concept.jpg`
+- `palm_capture_screen_concept.jpg`
+- `premium_screen_concept.jpg`
+- `tarot_screen_concept.jpg`
+- `history_screen_concept.jpg` — thumbnail içermeyen güncel Geçmiş tasarımı.
+- `icon_usage_showcase_concept.jpg` — kategori ikonlarının Dashboard/Geçmiş/kart alanlarında nasıl kullanılacağına dair referans.
 
-Bu dosyalar **yalnız tasarım referansıdır**. Runtime'da tam ekran screenshot olarak kullanılmaz.
+Bu dosyalar yalnız tasarım referansıdır; runtime'da tam ekran screenshot olarak kullanılmaz.
 
-## 2. Uygulama içi görsel asset seti — `assets/ui/`
+## 2. Uygulama içi runtime görsel asset seti — `assets/ui/`
 
-Aşağıdaki **11 JPG** repo içinde mevcut:
+Repo içinde **17 runtime UI asset'i** vardır.
 
-| Dosya | Blob SHA | Boyut |
-|---|---|---:|
-| `assets/ui/backgrounds/dashboard_background_main.jpg` | `07693171ad069cf19222a84f6e5f7ce1dcd952f4` | 5,192 B |
-| `assets/ui/cards/coffee_fortune_card.jpg` | `e88980f0fe94f67449f055caeadfafdffbd8a463` | 4,780 B |
-| `assets/ui/cards/palm_fortune_card.jpg` | `f9e56a44025973e752ec93e153046d148e22d511` | 5,454 B |
-| `assets/ui/cards/tarot_fortune_card.jpg` | `998196ab736bfead05f6496e735084b1ccd1b6e6` | 5,235 B |
-| `assets/ui/chat/fortune_chat_banner.jpg` | `7456ae6a99a4797831c764515c8d1807459b9be4` | 13,287 B |
-| `assets/ui/heroes/coffee_hero_screen.jpg` | `d2cf5376749bbe33627394f174c3fc494c1018b4` | 11,374 B |
-| `assets/ui/heroes/palm_hero_screen.jpg` | `62f1976d43f5c52559cbdf24c2fcc89a51cb10be` | 4,623 B |
-| `assets/ui/heroes/tarot_hero_screen.jpg` | `ee245eb1ac5f405e1a98889c24c806ab509874d8` | 9,118 B |
-| `assets/ui/results/fortune_result_hero.jpg` | `60e9bd6b4a96910ae0e7709737cac31c8ad3d4e2` | 11,448 B |
-| `assets/ui/splash/lpfal_splash.jpg` | `4e767f1e545e0c66fc6e21950d415e99baf35c46` | 10,894 B |
-| `assets/ui/states/ai_analysis.jpg` | `886a934e356d16a1bf728d9f892389a84e3b0687` | 6,378 B |
+### Background
+- `assets/ui/backgrounds/dashboard_background_main.jpg`
 
-## 3. Toplam doğrulanan görseller
+### Mode cards
+- `assets/ui/cards/coffee_fortune_card.jpg`
+- `assets/ui/cards/tarot_fortune_card.jpg`
+- `assets/ui/cards/palm_fortune_card.jpg`
+- `assets/ui/cards/dream_fortune_card.jpg` — Rüya Tabiri dashboard kartı.
 
-- Tasarım referansı: **9**
-- `assets/ui` görseli: **11**
-- Toplam repo içinde doğrulanan JPG: **20**
+### Mode icons — transparent PNG
+- `assets/ui/icons/coffee_fortune_icon.png` — blob `0f527ad11b3516fcd6ff70ec5a7ff1d2a7e48aee`
+- `assets/ui/icons/tarot_fortune_icon.png` — blob `f27321acee365accd9f919ea59b22140c3500f0e`
+- `assets/ui/icons/dream_interpretation_icon.png` — blob `c728e4736d39f8e2dabef472836589b479e672b1`
+- `assets/ui/icons/palm_fortune_icon.png` — blob `b515c2bc3f0b871047f6b17a556d5690ada73888`
 
-Son onaylanan Premium ekranı `premium_screen_concept.jpg` olarak kaydedildi. Bu sürümde kullanıcıya görünen restore butonu/metni yoktur; restore yalnız arka planda otomatik ve sessiz çalışacaktır.
+Kategori ikonları 192×192 şeffaf PNG çalışma asset'idir. Flutter tarafında sabit fiziksel piksel boyutuyla değil responsive logical size / constraints / `BoxFit.contain` ile kullanılacaktır. Önerilen kullanım aralıkları: liste 24–28dp, kart 28–36dp, başlık 32–40dp; tablet/BlueStacks'ta layout constraint'e göre ölçeklenir.
 
-## 4. Geçersiz / yeniden üretilecek mockup politikası
+### Heroes
+- `assets/ui/heroes/coffee_hero_screen.jpg`
+- `assets/ui/heroes/tarot_hero_screen.jpg`
+- `assets/ui/heroes/palm_hero_screen.jpg`
+- `assets/ui/heroes/dream_hero_screen.jpg` — blob `94d6bdda915e379e15ce8b469a5c6a4570749d7c`
 
-Aşağıdaki eski tasarım yönleri geçerli referans sayılmaz ve mevcut UI standardını değiştiremez:
-- eski Premium ekranındaki abonelik/çoklu plan/legacy plan etiketi veya görünür restore kontrolü,
-- eski Geçmiş ekranındaki kayıt thumbnail görselleri,
-- eski Rüya ekranındaki geçmiş rüya thumbnail görselleri,
-- `Kozmik Falın` gibi LP FAL dışı geçici marka metinleri.
+### Other runtime visuals
+- `assets/ui/chat/fortune_chat_banner.jpg`
+- `assets/ui/results/fortune_result_hero.jpg`
+- `assets/ui/splash/lpfal_splash.jpg`
+- `assets/ui/states/ai_analysis.jpg`
 
-Bunlar yeniden üretildiğinde yalnız yeni, şartnameye uygun sürüm repo referansı yapılır.
+## 3. Toplam doğrulanan UI görsel dosyası
 
-## 5. Premium copy kuralı
+- Tasarım referansı: **11**
+- Runtime UI asset'i: **17**
+- Toplam: **28 doğrulanmış UI görsel dosyası**
 
-Premium ürün/özellik adında tek kullanıcı kelimesi **Premium**'dur.
+Yeni batch commitinde eklenenler:
+- 4 kategori ikonu,
+- Rüya Tabiri dashboard kartı,
+- Rüya Tabiri hero,
+- thumbnailsız Geçmiş ekranı referansı,
+- ikon kullanım örneği referansı.
 
-Kullanılacak:
-- `Premium`
-- `LP FAL Premium`
+## 4. Geçmiş ekranı kuralı
 
-Satın alma açıklaması:
-- `Tek seferlik satın alım · Abonelik değildir.`
+Geçmiş kayıt listelerinde fal/rüya için üretilmiş thumbnail illüstrasyonu kullanılmaz. Kayıt satırında yalnız:
+- ilgili kategori ikonu,
+- tür/başlık,
+- tarih/saat,
+- kısa metin,
+- açma/chevron aksiyonu
+bulunur.
 
-Restore davranışı:
-- Kullanıcıya restore butonu/metni gösterilmez.
-- Google Play entitlement açılış/resume/internet geri gelişi gibi uygun anlarda arka planda sessizce senkronize edilir.
+## 5. Premium ve restore görünürlüğü
 
-## 6. JPG içi legacy metin politikası
+- Kullanıcıya görünen ürün adı yalnız `LP FAL Premium` / `Premium`.
+- `PRO/Pro`, abonelik veya `Ömür Boyu/Lifetime` paket adı yok.
+- Restore otomatik ve sessizdir.
+- Kullanıcıya restore butonu veya restore metni gösterilmez.
 
-`design_refs/ui/*.jpg` dosyaları raster/JPG olduğundan içlerindeki yazı runtime copy kaynağı değildir. Eski görselde legacy plan etiketi görülürse uygulamaya taşınmaz. Flutter widget copy'si şartnamedeki güncel metin olur ve yeni/yenilenen mockup yalnız güncel standardı kullanır.
+## 6. Legacy mockup politikası
+
+Eski mockup'ta yanlış marka, eski plan adı, görünür restore kontrolü, geçmiş thumbnail'ı veya V1 dışı özellik görülmesi runtime gereksinimi değildir. Yeni şartname ve güncel referanslar önceliklidir.
 
 ## 7. Release asset gate
 
-- [ ] Yukarıdaki dosyalar repo içinde mevcut.
-- [ ] Flutter `pubspec.yaml` yalnız gerçekten kullanılan runtime asset'leri içeriyor.
+- [ ] Runtime asset yolları `pubspec.yaml` içinde yalnız gerektiği kadar tanımlı.
 - [ ] Missing asset yok.
-- [ ] License/source manifest tamam.
-- [ ] Runtime UI'da Premium için eski plan etiketi yok.
-- [ ] Runtime UI'da süre/abonelik çağrıştıran plan adı yok.
-- [ ] Premium plan adı `LP FAL Premium`.
-- [ ] Premium UI'da görünür restore butonu/metni yok.
-- [ ] Geçmiş kayıt listelerinde fal/rüya thumbnail görseli yok.
+- [ ] 4 kategori ikonu şeffaf ve responsive kullanılıyor.
+- [ ] Geçmiş listelerinde thumbnail yok.
+- [ ] Premium UI'da görünür restore kontrolü yok.
+- [ ] Runtime UI'da `PRO/Pro` veya abonelik/süre çağrıştıran plan adı yok.
 - [ ] Tasarım JPG'leri tam ekran statik UI olarak kullanılmıyor.
+- [ ] Harici/public-domain asset varsa lisans/source manifesti tamam.
 
 **Bu manifest görsel dosya varlığı ve görsel-copy QA için zorunlu kontroldür.**
