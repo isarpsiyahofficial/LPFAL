@@ -1,13 +1,13 @@
 # LP FAL — UI Asset Manifest / Görsel Repo Kontrolü
 
-**Kontrol tarihi:** 2026-09-13  
+**Kontrol tarihi:** 2026-09-15  
 **Durum:** Repo `main` üzerinde doğrulandı.
 
 Bu dosya üretilmiş UI görsellerinin repoda gerçekten bulunduğunu kayıt altına alır ve runtime / tasarım referansı ayrımını bağlayıcı hale getirir.
 
 ## 1. Full-screen / tasarım referansları — `design_refs/ui/`
 
-Repo içinde **11 tasarım referansı** vardır:
+Repo içinde **12 tasarım referansı** vardır:
 
 - `analysis_screen_concept.jpg`
 - `chat_screen_concept_v1.jpg`
@@ -20,6 +20,7 @@ Repo içinde **11 tasarım referansı** vardır:
 - `tarot_screen_concept.jpg`
 - `history_screen_concept.jpg` — thumbnail içermeyen güncel Geçmiş tasarımı.
 - `icon_usage_showcase_concept.jpg` — kategori ikonlarının Dashboard/Geçmiş/kart alanlarında nasıl kullanılacağına dair referans.
+- `icon_system_style_guide_concept.jpg` — dört ana modül ikonunun uygulama genelindeki görsel dilini ve örnek kullanımını gösteren son onaylı stil rehberi; gerçek JPEG binary blob `1ef181a908f28d37862fbf7675240951a0b2ad24`.
 
 Bu dosyalar yalnız tasarım referansıdır; runtime'da tam ekran screenshot olarak kullanılmaz.
 
@@ -37,10 +38,10 @@ Repo içinde **17 runtime UI asset'i** vardır.
 - `assets/ui/cards/dream_fortune_card.jpg` — Rüya Tabiri dashboard kartı.
 
 ### Mode icons — transparent PNG
-- `assets/ui/icons/coffee_fortune_icon.png` — blob `0f527ad11b3516fcd6ff70ec5a7ff1d2a7e48aee`
-- `assets/ui/icons/tarot_fortune_icon.png` — blob `f27321acee365accd9f919ea59b22140c3500f0e`
-- `assets/ui/icons/dream_interpretation_icon.png` — blob `c728e4736d39f8e2dabef472836589b479e672b1`
-- `assets/ui/icons/palm_fortune_icon.png` — blob `b515c2bc3f0b871047f6b17a556d5690ada73888`
+- `assets/ui/icons/coffee_fortune_icon.png`
+- `assets/ui/icons/tarot_fortune_icon.png`
+- `assets/ui/icons/dream_interpretation_icon.png`
+- `assets/ui/icons/palm_fortune_icon.png`
 
 Kategori ikonları 192×192 şeffaf PNG çalışma asset'idir. Flutter tarafında sabit fiziksel piksel boyutuyla değil responsive logical size / constraints / `BoxFit.contain` ile kullanılacaktır. Önerilen kullanım aralıkları: liste 24–28dp, kart 28–36dp, başlık 32–40dp; tablet/BlueStacks'ta layout constraint'e göre ölçeklenir.
 
@@ -48,7 +49,7 @@ Kategori ikonları 192×192 şeffaf PNG çalışma asset'idir. Flutter tarafınd
 - `assets/ui/heroes/coffee_hero_screen.jpg`
 - `assets/ui/heroes/tarot_hero_screen.jpg`
 - `assets/ui/heroes/palm_hero_screen.jpg`
-- `assets/ui/heroes/dream_hero_screen.jpg` — blob `94d6bdda915e379e15ce8b469a5c6a4570749d7c`
+- `assets/ui/heroes/dream_hero_screen.jpg`
 
 ### Other runtime visuals
 - `assets/ui/chat/fortune_chat_banner.jpg`
@@ -58,16 +59,11 @@ Kategori ikonları 192×192 şeffaf PNG çalışma asset'idir. Flutter tarafınd
 
 ## 3. Toplam doğrulanan UI görsel dosyası
 
-- Tasarım referansı: **11**
+- Tasarım referansı: **12**
 - Runtime UI asset'i: **17**
-- Toplam: **28 doğrulanmış UI görsel dosyası**
+- Toplam: **29 doğrulanmış UI görsel dosyası**
 
-Yeni batch commitinde eklenenler:
-- 4 kategori ikonu,
-- Rüya Tabiri dashboard kartı,
-- Rüya Tabiri hero,
-- thumbnailsız Geçmiş ekranı referansı,
-- ikon kullanım örneği referansı.
+Son kaydedilen onaylı referans: `icon_system_style_guide_concept.jpg`.
 
 ## 4. Geçmiş ekranı kuralı
 
